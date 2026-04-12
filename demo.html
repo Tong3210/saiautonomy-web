@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAI Autonomy — Mission Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0A0C0E;
+  --bg2: #111417;
+  --bg3: #181C20;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #E8EAF0;
+  --text2: #8A8FA0;
+  --text3: #555A68;
+  --green: #00C896;
+  --green-dim: rgba(0,200,150,0.12);
+  --amber: #E8A020;
+  --amber-dim: rgba(232,160,32,0.12);
+  --red: #E84040;
+  --red-dim: rgba(232,64,64,0.12);
+  --blue: #4090E8;
+  --blue-dim: rgba(64,144,232,0.12);
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── SCREEN 1: SETUP ── */
+#screen-setup {
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--bg);
+}
+
+.setup-inner { width: 100%; max-width: 640px; }
+
+.logo-mark {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 48px;
+}
+.logo-hex {
+  width: 36px; height: 36px;
+  background: var(--green);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.logo-text { font-family: var(--mono); font-size: 16px; font-weight: 500; letter-spacing: 0.12em; }
+.logo-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.2em; margin-top: 2px; }
+
+.setup-heading { font-size: 28px; font-weight: 300; line-height: 1.3; margin-bottom: 8px; }
+.setup-sub { color: var(--text2); font-size: 14px; line-height: 1.6; margin-bottom: 40px; }
+
+.field { margin-bottom: 20px; }
+.field label { display: block; font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+.field select, .field input[type=range] {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 10px 14px; color: var(--text);
+  font-family: var(--mono); font-size: 13px; appearance: none; cursor: pointer;
+  outline: none;
+}
+.field select:focus { border-color: var(--green); }
+
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row input { flex: 1; accent-color: var(--green); }
+.range-val { font-family: var(--mono); font-size: 13px; color: var(--green); min-width: 48px; text-align: right; }
+
+.scenario-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.scenario-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.scenario-card:hover { border-color: var(--border2); }
+.scenario-card.selected { border-color: var(--green); background: var(--green-dim); }
+.sc-icon { font-size: 20px; margin-bottom: 8px; }
+.sc-name { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.sc-desc { font-size: 11px; color: var(--text3); line-height: 1.4; }
+
+.start-mission-btn {
+  width: 100%; margin-top: 32px;
+  background: var(--green); color: #000;
+  border: none; border-radius: 6px; padding: 14px;
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  cursor: pointer; letter-spacing: 0.08em;
+  transition: opacity 0.15s;
+}
+.start-mission-btn:hover { opacity: 0.88; }
+
+/* ── SCREEN 2: MISSION ── */
+#screen-mission { background: var(--bg); flex-direction: column; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  background: var(--bg2); flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo { font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.1em; }
+.sep { width: 1px; height: 16px; background: var(--border2); }
+.mission-badge {
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 4px;
+  padding: 3px 8px; letter-spacing: 0.06em;
+}
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.telem { text-align: right; }
+.telem-val { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.telem-label { font-family: var(--mono); font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+.stop-btn {
+  background: transparent; border: 1px solid var(--border2); border-radius: 5px;
+  color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 5px 12px;
+  cursor: pointer; letter-spacing: 0.06em; transition: border-color 0.15s;
+}
+.stop-btn:hover { border-color: var(--red); color: var(--red); }
+
+.mission-body {
+  display: grid; grid-template-columns: 1fr 320px; flex: 1; overflow: hidden;
+}
+
+.map-area { position: relative; overflow: hidden; background: var(--bg); }
+canvas#missionCanvas { display: block; width: 100%; height: 100%; }
+
+.right-panel {
+  border-left: 1px solid var(--border); display: flex; flex-direction: column;
+  overflow: hidden; background: var(--bg2);
+}
+
+.decision-panel { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.dp-title { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px; }
+
+.level-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 10px; border-radius: 6px; margin-bottom: 4px;
+  transition: background 0.2s, border-color 0.2s;
+  border: 1px solid transparent;
+}
+.level-row.active-1a { background: var(--red-dim); border-color: var(--red); }
+.level-row.active-1b { background: var(--green-dim); border-color: var(--green); }
+.level-row.active-2  { background: var(--amber-dim); border-color: var(--amber); }
+.level-row.active-3  { background: var(--blue-dim); border-color: var(--blue); }
+
+.level-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.level-name { font-family: var(--mono); font-size: 11px; font-weight: 500; }
+.level-desc { font-size: 10px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+
+.log-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.log-header { padding: 10px 16px 6px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.14em; }
+.log-scroll { flex: 1; overflow-y: auto; padding: 8px 16px; }
+.log-scroll::-webkit-scrollbar { width: 3px; }
+.log-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.log-entry { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.log-entry:last-child { border-bottom: none; }
+.log-ts { font-family: var(--mono); font-size: 10px; color: var(--text3); flex-shrink: 0; padding-top: 1px; }
+.log-msg { font-family: var(--mono); font-size: 11px; line-height: 1.5; }
+.log-msg.ok { color: var(--green); }
+.log-msg.warn { color: var(--amber); }
+.log-msg.crit { color: var(--red); }
+.log-msg.info { color: var(--blue); }
+.log-msg.dim { color: var(--text2); }
+
+.alert-section { padding: 12px 16px; border-top: 1px solid var(--border); }
+.alert-card {
+  border-radius: 6px; padding: 12px 14px;
+  border: 1px solid var(--amber);
+  background: var(--amber-dim);
+}
+.alert-card.crit { border-color: var(--red); background: var(--red-dim); }
+.alert-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.alert-tag.warn { color: var(--amber); }
+.alert-tag.crit { color: var(--red); }
+.alert-msg-text { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+.alert-btns { display: flex; gap: 8px; }
+.btn-ok {
+  flex: 1; background: var(--green); color: #000; border: none; border-radius: 4px;
+  padding: 7px 0; font-family: var(--mono); font-size: 11px; font-weight: 500;
+  cursor: pointer; letter-spacing: 0.06em; transition: opacity 0.15s;
+}
+.btn-ok:hover { opacity: 0.85; }
+.btn-hold {
+  flex: 1; background: transparent; border: 1px solid var(--border2); border-radius: 4px;
+  color: var(--text2); padding: 7px 0; font-family: var(--mono); font-size: 11px;
+  cursor: pointer; letter-spacing: 0.06em; transition: border-color 0.15s;
+}
+.btn-hold:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── SCREEN 3: REPORT ── */
+#screen-report {
+  align-items: center; justify-content: center; padding: 40px 24px;
+}
+.report-inner { width: 100%; max-width: 600px; }
+.report-header { margin-bottom: 32px; }
+.report-status { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+.report-status.complete { color: var(--green); }
+.report-status.emergency { color: var(--red); }
+.report-title { font-size: 26px; font-weight: 300; margin-bottom: 8px; }
+.report-sub { color: var(--text2); font-size: 13px; }
+.report-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.report-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.rs-val { font-family: var(--mono); font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.rs-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+.events-title { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px; }
+.event-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.event-row:last-child { border-bottom: none; }
+.event-level { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; flex-shrink: 0; }
+.ev-1a { background: var(--red-dim); color: var(--red); }
+.ev-1b { background: var(--green-dim); color: var(--green); }
+.ev-2 { background: var(--amber-dim); color: var(--amber); }
+.event-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.event-ts { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-left: auto; flex-shrink: 0; padding-top: 1px; }
+
+.restart-btn {
+  width: 100%; margin-top: 28px; background: transparent;
+  border: 1px solid var(--border2); border-radius: 6px; padding: 12px;
+  font-family: var(--mono); font-size: 12px; color: var(--text2);
+  cursor: pointer; letter-spacing: 0.08em; transition: border-color 0.15s, color 0.15s;
+}
+.restart-btn:hover { border-color: var(--green); color: var(--green); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.blink { animation: blink 1.2s infinite; }
+
+@media (max-width: 700px) {
+  .scenario-cards { grid-template-columns: 1fr; }
+  .mission-body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .map-area { min-height: 50vh; }
+  .right-panel { border-left: none; border-top: 1px solid var(--border); max-height: 45vh; overflow-y: auto; }
+  .report-grid { grid-template-columns: 1fr 1fr; }
+  .topbar { flex-wrap: wrap; gap: 8px; }
+  .topbar-right { flex-wrap: wrap; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: SETUP -->
+<div id="screen-setup" class="screen active">
+  <div class="setup-inner">
+    <div class="logo-mark">
+      <div class="logo-hex"></div>
+      <div>
+        <div class="logo-text">SAI AUTONOMY</div>
+        <div class="logo-sub">Decision Layer Infrastructure</div>
+      </div>
+    </div>
+
+    <h1 class="setup-heading">Configure your mission</h1>
+    <p class="setup-sub">Select a scenario and parameters. The decision layer will handle the rest — routing exceptions to you only when human judgment is needed.</p>
+
+    <div class="field">
+      <label>Scenario</label>
+      <div class="scenario-cards" id="scenarioCards">
+        <div class="scenario-card selected" data-id="construction" onclick="selectScenario(this)">
+          <div class="sc-icon">🏗️</div>
+          <div class="sc-name">Construction</div>
+          <div class="sc-desc">Site progress monitoring &amp; safety inspection</div>
+        </div>
+        <div class="scenario-card" data-id="powerline" onclick="selectScenario(this)">
+          <div class="sc-icon">⚡</div>
+          <div class="sc-name">Power Line</div>
+          <div class="sc-desc">Corridor inspection, fault detection</div>
+        </div>
+        <div class="scenario-card" data-id="facility" onclick="selectScenario(this)">
+          <div class="sc-icon">🏭</div>
+          <div class="sc-name">Facility</div>
+          <div class="sc-desc">Industrial site perimeter &amp; asset check</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>When should the drone ask for your input?</label>
+      <div class="range-row">
+        <input type="range" id="thresholdSlider" min="1" max="3" value="2" step="1" oninput="updateThreshold(this.value)">
+        <span class="range-val" id="thresholdVal">Balanced</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono)" id="thresholdDesc">Holds and alerts on ambiguous situations. Handles routine events automatically.</div>
+    </div>
+
+    <div class="field">
+      <label>Number of waypoints</label>
+      <div class="range-row">
+        <input type="range" id="wpSlider" min="4" max="8" value="6" step="1" oninput="document.getElementById('wpVal').textContent=this.value">
+        <span class="range-val" id="wpVal">6</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Mission frequency</label>
+      <div class="range-row">
+        <input type="range" id="batSlider" min="1" max="7" value="3" step="1" oninput="document.getElementById('batVal').textContent=this.value+' times / day'">
+        <span class="range-val" id="batVal">3 times / day</span>
+      </div>
+    </div>
+
+    <button class="start-mission-btn" onclick="launchMission()">Launch mission →</button>
+    <p style="margin-top:16px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:0.1em;">Concept simulation — not live telemetry</p>
+  </div>
+</div>
+
+<!-- SCREEN 2: MISSION -->
+<div id="screen-mission" class="screen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">SAI AUTONOMY</span>
+      <div class="sep"></div>
+      <span class="mission-badge" id="missionBadge">CONSTRUCTION · ZONE A</span>
+      <span class="mission-badge blink" id="statusBadge" style="color:var(--green);border-color:var(--green)">● FLYING</span>
+    </div>
+    <div class="topbar-right">
+      <div class="telem"><div class="telem-val" id="tBat" style="color:var(--green)">—</div><div class="telem-label">Battery</div></div>
+      <div class="telem"><div class="telem-val" id="tAlt">—</div><div class="telem-label">Alt m</div></div>
+      <div class="telem"><div class="telem-val" id="tWind">—</div><div class="telem-label">Wind m/s</div></div>
+      <div class="telem"><div class="telem-val" id="tWP">0/6</div><div class="telem-label">Waypoint</div></div>
+      <button class="stop-btn" onclick="endMission('abort')">■ End</button>
+    </div>
+  </div>
+
+  <div class="mission-body">
+    <div class="map-area">
+      <canvas id="missionCanvas"></canvas>
+    </div>
+
+    <div class="right-panel">
+      <div class="decision-panel">
+        <div class="dp-title">Decision layer — active level</div>
+        <div class="level-row" id="lv1a">
+          <div class="level-dot" style="background:var(--red)"></div>
+          <div>
+            <div class="level-name" style="color:var(--red)">Critical response</div>
+            <div class="level-desc">Safety threshold breached. Executing immediately — cannot be overridden.</div>
+          </div>
+        </div>
+        <div class="level-row active-1b" id="lv1b">
+          <div class="level-dot" style="background:var(--green)"></div>
+          <div>
+            <div class="level-name" style="color:var(--green)">Autonomous execution</div>
+            <div class="level-desc">Flying the mission automatically. No input needed.</div>
+          </div>
+        </div>
+        <div class="level-row" id="lv2">
+          <div class="level-dot" style="background:var(--amber)"></div>
+          <div>
+            <div class="level-name" style="color:var(--amber)">Your judgment needed</div>
+            <div class="level-desc">Holding. Situation outside normal parameters.</div>
+          </div>
+        </div>
+        <div class="level-row" id="lv3">
+          <div class="level-dot" style="background:var(--blue)"></div>
+          <div>
+            <div class="level-name" style="color:var(--blue)">Manual control</div>
+            <div class="level-desc">Operator has full control of vehicle.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="log-area">
+        <div class="log-header">Event log</div>
+        <div class="log-scroll" id="logScroll"></div>
+      </div>
+
+      <div class="alert-section" id="alertSection" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: REPORT -->
+<div id="screen-report" class="screen">
+  <div class="report-inner fade-in">
+    <div class="report-header">
+      <div class="report-status" id="reportStatus">MISSION COMPLETE</div>
+      <h2 class="report-title" id="reportTitle">Construction Site A — Inspection</h2>
+      <p class="report-sub" id="reportSub">All waypoints covered. 3 decision events processed.</p>
+    </div>
+
+    <div class="report-grid">
+      <div class="report-stat">
+        <div class="rs-val" id="rWP" style="color:var(--green)">6/6</div>
+        <div class="rs-label">Waypoints</div>
+      </div>
+      <div class="report-stat">
+        <div class="rs-val" id="rTime" style="color:var(--text)">—</div>
+        <div class="rs-label">Duration</div>
+      </div>
+      <div class="report-stat">
+        <div class="rs-val" id="rBat" style="color:var(--green)">—</div>
+        <div class="rs-label">Frequency</div>
+      </div>
+    </div>
+
+    <div class="events-title">Decision events during mission</div>
+    <div id="reportEvents"></div>
+
+    <button class="restart-btn" onclick="goSetup()">← Configure new mission</button>
+  </div>
+</div>
+
+<script>
+const SCENARIOS = {
+  construction: { name: 'CONSTRUCTION · ZONE A', label: 'Construction Site A — Inspection' },
+  powerline:    { name: 'POWER LINE · CORRIDOR B', label: 'Power Line Corridor B — Fault Detection' },
+  facility:     { name: 'FACILITY · PERIMETER', label: 'Facility Perimeter — Asset Check' }
+};
+
+let selectedScenario = 'construction';
+let interventionLevel = 2, missionFreq = 3;
+let missionRunning = false;
+let elapsedSec = 0, tickInterval = null;
+let drone = {x:0,y:0}, targetWP = 0, totalWP = 6;
+let bat = 100, alt = 30, wind = 3.2;
+let events = [], decisionEvents = [];
+let alertPending = null, holding = false;
+let workerFired=false, batWarnFired=false, emergencyFired=false;
+let workerTick = 80;
+let canvas, ctx;
+let waypoints = [];
+let missionResult = 'complete';
+
+function selectScenario(el) {
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedScenario = el.dataset.id;
+}
+
+function updateThreshold(v) {
+  const labels = {1:'Conservative', 2:'Balanced', 3:'Autonomous'};
+  const descs = {
+    1:'Asks for confirmation on any uncertain situation, including minor deviations.',
+    2:'Holds and alerts on ambiguous situations. Handles routine events automatically.',
+    3:'Handles most situations autonomously. Only alerts on critical safety events.'
+  };
+  document.getElementById('thresholdVal').textContent = labels[v];
+  document.getElementById('thresholdDesc').textContent = descs[v];
+}
+
+function launchMission() {
+  totalWP = parseInt(document.getElementById('wpSlider').value);
+  interventionLevel = parseInt(document.getElementById('thresholdSlider').value);
+  missionFreq = parseInt(document.getElementById('batSlider').value);
+  showScreen('mission');
+  document.getElementById('missionBadge').textContent = SCENARIOS[selectedScenario].name;
+  initMission();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function initMission() {
+  const existing = document.getElementById('endOverlay');
+  if(existing) existing.remove();
+  canvas = document.getElementById('missionCanvas');
+  ctx = canvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  bat=100; alt=30; wind=3.2; elapsedSec=0; targetWP=0;
+  events=[]; decisionEvents=[];
+  workerFired=false; batWarnFired=false; emergencyFired=false;
+  workerTick = 60 + Math.floor(Math.random() * 40);
+  alertPending=null; holding=false; missionResult='complete';
+  missionRunning=true;
+
+  document.getElementById('tWP').textContent = '0/'+totalWP;
+  document.getElementById('alertSection').style.display='none';
+  document.getElementById('logScroll').innerHTML='';
+  const badge = document.getElementById('statusBadge');
+  badge.textContent='● FLYING';
+  badge.style.color='var(--green)';
+  badge.style.borderColor='var(--green)';
+  badge.classList.add('blink');
+  setLevel('1b');
+
+  buildWaypoints();
+  drone.x = waypoints[0].x; drone.y = waypoints[0].y;
+  targetWP = 1;
+
+  addLog('Mission initialised. Heading to WP 1.','ok');
+  addLog('Autonomous execution active.','dim');
+  updateTelem();
+  draw();
+
+  tickInterval = setInterval(tick, 250);
+}
+
+function buildWaypoints() {
+  waypoints = [];
+  const cols=3, rows=Math.ceil(totalWP/cols);
+  const marginX=0.15, marginY=0.15, spacingX=(1-marginX*2)/(cols-1), spacingY=(1-marginY*2)/(rows-1||1);
+  for(let i=0;i<totalWP;i++){
+    const row=Math.floor(i/cols), col=i%cols;
+    const flip=row%2===1;
+    const cx=flip?(cols-1-col):col;
+    waypoints.push({ x:marginX+cx*spacingX, y:marginY+row*(rows>1?spacingY:0) });
+  }
+}
+
+function resizeCanvas() {
+  if(!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+
+function tick() {
+  if(!missionRunning) return;
+  elapsedSec++;
+  bat = Math.max(0, bat - (holding ? 0.08 : 0.38));
+  wind = 2.8 + Math.sin(elapsedSec*0.08)*1.8 + Math.random()*0.4;
+  alt = 30 + Math.sin(elapsedSec*0.15)*3;
+
+  if(targetWP < waypoints.length && !alertPending && !holding) {
+    const wp = waypoints[targetWP];
+    const dx=wp.x-drone.x, dy=wp.y-drone.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    const speed=0.012;
+    if(dist < speed+0.008){
+      drone.x=wp.x; drone.y=wp.y;
+      targetWP++;
+      document.getElementById('tWP').textContent = Math.min(targetWP,totalWP)+'/'+totalWP;
+      if(targetWP<=waypoints.length) addLog('WP '+Math.min(targetWP,totalWP)+' reached.','dim');
+    } else { drone.x+=dx/dist*speed; drone.y+=dy/dist*speed; }
+  }
+
+  // Events
+  if(bat<=42 && bat>41 && !batWarnFired){
+    batWarnFired=true;
+    addLog('Battery 42%. Return margin recalculated.','warn');
+    addLog('Adjusting threshold. Continuing mission.','dim');
+    decisionEvents.push({level:'1b',desc:'Battery threshold recalculated. Auto-adjusted return margin. Mission continued.',ts:fmtTime(elapsedSec)});
+  }
+
+  if(elapsedSec===workerTick && !workerFired && !alertPending){
+    workerFired=true;
+    if(interventionLevel === 1){
+      // Conservative: always ask
+      setLevel('2');
+      addLog('ALERT: Personnel detected in approach zone.','warn');
+      addLog('Holding — awaiting your confirmation.','warn');
+      decisionEvents.push({level:'2',desc:'Worker detected. UAV held. Operator confirmation requested (conservative mode).',ts:fmtTime(elapsedSec)});
+      showAlert('Your judgment needed','A worker is detected within 10m of the planned path. The drone is holding current position.',false,
+        ()=>{ workerFired=false; addLog('Operator confirmed. Zone clear. Resuming.','ok'); setLevel('1b'); },
+        ()=>{ holding=true; addLog('Holding position. Auto-resuming in 8s.','warn'); setTimeout(()=>{ workerFired=false; holding=false; addLog('Auto-resuming.','dim'); setLevel('1b'); },8000); }
+      );
+    } else if(interventionLevel === 2){
+      // Balanced: ask
+      setLevel('2');
+      addLog('ALERT: Personnel detected in approach zone.','warn');
+      addLog('Holding — awaiting your confirmation.','warn');
+      decisionEvents.push({level:'2',desc:'Worker detected near WP approach. UAV held position. Operator confirmed clearance.',ts:fmtTime(elapsedSec)});
+      showAlert('Your judgment needed','A worker is detected within 10m of the planned path. The drone is holding current position.',false,
+        ()=>{ workerFired=false; addLog('Operator confirmed. Zone clear. Resuming.','ok'); setLevel('1b'); },
+        ()=>{ holding=true; addLog('Holding position. Auto-resuming in 8s.','warn'); setTimeout(()=>{ workerFired=false; holding=false; addLog('Auto-resuming.','dim'); setLevel('1b'); },8000); }
+      );
+    } else {
+      // Autonomous: handle it without asking
+      addLog('Personnel detected. Rerouting autonomously.','dim');
+      addLog('No operator input required (autonomous mode).','dim');
+      decisionEvents.push({level:'1b',desc:'Worker detected. System rerouted autonomously without operator input (autonomous threshold).',ts:fmtTime(elapsedSec)});
+    }
+  }
+
+  if(bat<=8 && !emergencyFired){
+    emergencyFired=true; missionRunning=false;
+    clearInterval(tickInterval);
+    setLevel('1a');
+    addLog('CRITICAL: Battery at 8%. Below safety floor.','crit');
+    addLog('Emergency landing initiated. Cannot be overridden.','crit');
+    decisionEvents.push({level:'1a',desc:'Battery reached critical threshold (8%). Emergency landing executed automatically. Cannot be overridden.',ts:fmtTime(elapsedSec)});
+    alertPending=null; renderAlert();
+    document.getElementById('alertSection').style.display='none';
+    document.getElementById('statusBadge').textContent='● EMERGENCY LAND';
+    document.getElementById('statusBadge').style.color='var(--red)';
+    document.getElementById('statusBadge').style.borderColor='var(--red)';
+    missionResult='emergency';
+    showEndOverlay('emergency');
+  }
+
+  if(targetWP>=waypoints.length && missionRunning && bat>10){
+    missionRunning=false; clearInterval(tickInterval);
+    addLog('All waypoints complete. Returning to launch.','ok');
+    addLog('Auto return initiated.','dim');
+    document.getElementById('statusBadge').textContent='● COMPLETE';
+    document.getElementById('statusBadge').style.color='var(--green)';
+    document.getElementById('statusBadge').classList.remove('blink');
+    showEndOverlay('complete');
+  }
+
+  updateTelem(); draw();
+}
+
+function fmtTime(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+function addLog(msg,cls) {
+  events.unshift({msg,cls,ts:fmtTime(elapsedSec)});
+  if(events.length>25) events.pop();
+  const el=document.getElementById('logScroll');
+  el.innerHTML=events.map(e=>`<div class="log-entry"><span class="log-ts">${e.ts}</span><span class="log-msg ${e.cls}">${e.msg}</span></div>`).join('');
+}
+
+function setLevel(l) {
+  document.querySelectorAll('.level-row').forEach(r=>{ r.className='level-row'; });
+  document.getElementById('lv'+l).classList.add('active-'+l);
+}
+
+function showAlert(title,msg,isCrit,onConfirm,onHold) {
+  alertPending={title,msg,isCrit,onConfirm,onHold};
+  renderAlert();
+}
+
+function renderAlert() {
+  const sec=document.getElementById('alertSection');
+  if(!alertPending){ sec.style.display='none'; sec.innerHTML=''; return; }
+  const {title,msg,isCrit}=alertPending;
+  sec.style.display='block';
+  sec.innerHTML=`<div class="alert-card ${isCrit?'crit':''}">
+    <div class="alert-tag ${isCrit?'crit':'warn'}">${title}</div>
+    <div class="alert-msg-text">${msg}</div>
+    <div class="alert-btns">
+      <button class="btn-ok" onclick="confirmAlert()">Confirm &amp; continue</button>
+      <button class="btn-hold" onclick="holdAlert()">Keep holding</button>
+    </div>
+  </div>`;
+}
+
+function confirmAlert(){ if(!alertPending)return; const cb=alertPending.onConfirm; alertPending=null; renderAlert(); if(cb)cb(); }
+function holdAlert(){
+  if(!alertPending)return;
+  holding=true;
+  const cb=alertPending.onHold;
+  alertPending=null; renderAlert();
+  addLog('Holding position. Will auto-resume in 8s.','warn');
+  if(cb)cb();
+  setTimeout(()=>{ holding=false; addLog('Auto-resuming after hold.','dim'); setLevel('1b'); }, 8000);
+}
+
+function updateTelem() {
+  const b=Math.round(bat), bEl=document.getElementById('tBat');
+  bEl.textContent=b+'%'; bEl.style.color=b>40?'var(--green)':b>20?'var(--amber)':'var(--red)';
+  document.getElementById('tAlt').textContent=Math.round(alt);
+  document.getElementById('tWind').textContent=wind.toFixed(1);
+}
+
+function draw() {
+  if(!canvas||!ctx) return;
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Background grid
+  ctx.strokeStyle='rgba(255,255,255,0.035)'; ctx.lineWidth=1;
+  for(let i=0;i<=20;i++){
+    ctx.beginPath(); ctx.moveTo(i/20*W,0); ctx.lineTo(i/20*W,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i/20*H); ctx.lineTo(W,i/20*H); ctx.stroke();
+  }
+
+  // Site structures (based on scenario)
+  const structures = selectedScenario==='powerline'
+    ? [{x:0.05,y:0.45,w:0.9,h:0.01,label:'POWER CORRIDOR'}]
+    : [{x:0.3,y:0.25,w:0.2,h:0.2,label:'BLDG A'},{x:0.58,y:0.3,w:0.16,h:0.18,label:'BLDG B'},{x:0.3,y:0.6,w:0.1,h:0.12,label:'SITE OFFICE'}];
+
+  structures.forEach(s=>{
+    const sx=s.x*W,sy=s.y*H,sw=s.w*W,sh=s.h*H;
+    ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fillRect(sx,sy,sw,sh);
+    ctx.strokeStyle='rgba(255,255,255,0.12)'; ctx.lineWidth=0.5; ctx.strokeRect(sx,sy,sw,sh);
+    ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.font='10px "IBM Plex Mono"';
+    ctx.fillText(s.label,sx+5,sy+14);
+  });
+
+  // Path
+  if(waypoints.length>1){
+    ctx.strokeStyle='rgba(64,144,232,0.2)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(waypoints[0].x*W,waypoints[0].y*H);
+    waypoints.forEach(wp=>ctx.lineTo(wp.x*W,wp.y*H));
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  // Waypoints
+  waypoints.forEach((wp,i)=>{
+    const wx=wp.x*W, wy=wp.y*H;
+    const visited=i<targetWP;
+    ctx.fillStyle=visited?'rgba(0,200,150,0.5)':'rgba(64,144,232,0.3)';
+    ctx.beginPath(); ctx.arc(wx,wy,5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=visited?'#00C896':'rgba(64,144,232,0.6)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(wx,wy,5,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='9px "IBM Plex Mono"';
+    ctx.fillText('WP'+(i+1),wx+8,wy-5);
+  });
+
+  // Worker figure
+  if(workerFired){
+    const wp5=waypoints[Math.min(4,waypoints.length-1)];
+    const wx=wp5.x*W-24, wy=wp5.y*H+24;
+    const pulse = Math.sin(elapsedSec*0.3)*0.4+0.6;
+    // Danger zone ring
+    ctx.strokeStyle=`rgba(232,64,64,${pulse*0.4})`; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(wx,wy,28,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle=`rgba(232,64,64,${pulse*0.08})`; ctx.beginPath(); ctx.arc(wx,wy,28,0,Math.PI*2); ctx.fill();
+    // Person body
+    ctx.fillStyle='#E84040';
+    ctx.beginPath(); ctx.arc(wx,wy-10,5,0,Math.PI*2); ctx.fill(); // head
+    ctx.beginPath(); ctx.moveTo(wx,wy-5); ctx.lineTo(wx,wy+6); ctx.strokeStyle='#E84040'; ctx.lineWidth=3; ctx.stroke(); // torso
+    ctx.beginPath(); ctx.moveTo(wx-6,wy+1); ctx.lineTo(wx+6,wy+1); ctx.stroke(); // arms
+    ctx.beginPath(); ctx.moveTo(wx,wy+6); ctx.lineTo(wx-5,wy+14); ctx.stroke(); // left leg
+    ctx.beginPath(); ctx.moveTo(wx,wy+6); ctx.lineTo(wx+5,wy+14); ctx.stroke(); // right leg
+    // Label
+    ctx.fillStyle='#E84040'; ctx.font='bold 9px "IBM Plex Mono"';
+    ctx.fillText('PERSONNEL',wx-22,wy+28);
+  }
+
+  // Drone
+  const dx=drone.x*W, dy=drone.y*H;
+  ctx.strokeStyle='rgba(0,200,150,0.15)'; ctx.lineWidth=14;
+  ctx.beginPath(); ctx.arc(dx,dy,22,0,Math.PI*2); ctx.stroke();
+  [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy])=>{
+    ctx.strokeStyle='rgba(0,200,150,0.5)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(dx+sx*5,dy+sy*5); ctx.lineTo(dx+sx*12,dy+sy*12); ctx.stroke();
+  });
+  ctx.fillStyle='#00C896'; ctx.beginPath(); ctx.arc(dx,dy,4,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(0,200,150,0.85)'; ctx.font='bold 9px "IBM Plex Mono"';
+  ctx.fillText('UAV',dx-8,dy-15);
+
+  // Timer overlay
+  ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font='11px "IBM Plex Mono"';
+  ctx.fillText(fmtTime(elapsedSec), W-54, H-14);
+}
+
+function showEndOverlay(result) {
+  const mapArea = document.querySelector('.map-area');
+  const existing = document.getElementById('endOverlay');
+  if(existing) existing.remove();
+  const isEmergency = result==='emergency';
+  const div = document.createElement('div');
+  div.id='endOverlay';
+  div.style.cssText='position:absolute;inset:0;background:rgba(10,12,14,0.75);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+  div.innerHTML=`
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:${isEmergency?'var(--red)':'var(--green)'}">
+      ${isEmergency?'Emergency landing':'Mission complete'}
+    </div>
+    <div style="font-size:13px;color:var(--text2);font-family:var(--sans);text-align:center;max-width:280px;line-height:1.6;">
+      ${isEmergency?'The drone executed an emergency landing. All data has been logged.':'All waypoints inspected. Drone returning to base.'}
+    </div>
+    <button onclick="endMission('${result}')" style="background:${isEmergency?'var(--red)':'var(--green)'};color:#000;border:none;border-radius:6px;padding:10px 24px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;letter-spacing:0.08em;">
+      View mission report →
+    </button>`;
+  mapArea.appendChild(div);
+}
+
+function endMission(result) {
+  missionRunning=false;
+  if(tickInterval){ clearInterval(tickInterval); tickInterval=null; }
+  buildReport(result);
+  showScreen('report');
+}
+
+function buildReport(result) {
+  const scenario=SCENARIOS[selectedScenario];
+  if(result==='emergency'){
+    document.getElementById('reportStatus').textContent='EMERGENCY LANDING';
+    document.getElementById('reportStatus').className='report-status emergency';
+    document.getElementById('reportTitle').textContent=scenario.label;
+    document.getElementById('reportSub').textContent='Mission ended by emergency protocol. '+decisionEvents.length+' decision events processed.';
+  } else {
+    document.getElementById('reportStatus').textContent='MISSION COMPLETE';
+    document.getElementById('reportStatus').className='report-status complete';
+    document.getElementById('reportTitle').textContent=scenario.label;
+    document.getElementById('reportSub').textContent='All waypoints covered. '+decisionEvents.length+' decision events processed autonomously.';
+  }
+  document.getElementById('rWP').textContent=Math.min(targetWP,totalWP)+'/'+totalWP;
+  document.getElementById('rTime').textContent=fmtTime(elapsedSec);
+  document.getElementById('rBat').textContent=missionFreq+' missions/day';
+  const colors={'1a':'ev-1a','1b':'ev-1b','2':'ev-2'};
+  const labels={'1a':'CRITICAL','1b':'AUTO','2':'YOUR INPUT'};
+  document.getElementById('reportEvents').innerHTML = decisionEvents.length
+    ? decisionEvents.map(e=>`<div class="event-row">
+        <span class="event-level ${colors[e.level]}">${labels[e.level]}</span>
+        <span class="event-desc">${e.desc}</span>
+        <span class="event-ts">${e.ts}</span>
+      </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:10px 0;">No decision events recorded.</div>';
+}
+
+function goSetup() {
+  if(tickInterval){ clearInterval(tickInterval); tickInterval=null; }
+  missionRunning=false;
+  showScreen('setup');
+}
+</script>
+</body>
+</html>
