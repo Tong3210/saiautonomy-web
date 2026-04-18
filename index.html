@@ -5,263 +5,514 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sai — We design the moments that matter</title>
   <meta name="description" content="The decision layer for autonomous drones. Sai gives commercial drones autonomous decision-making without replacing your hardware." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='12' fill='%23111417'/%3E%3Cpath d='M 51.5 20.2 A 23 23 0 1 0 53.4 26.7' stroke='%23E8EAF0' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='53.4' cy='26.7' r='2.5' fill='%23D99548'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #080808;
-      --surface:  #111111;
-      --accent:   #f0f0f0;
-      --text:     #f0f0f0;
-      --text-sec: #7a7a7a;
-      --text-dim: #3a3a3a;
-      --border:   rgba(255, 255, 255, 0.07);
+      --ed-bg:       #080808;
+      --ed-surface:  #111111;
+      --ed-text:     #f0f0f0;
+      --ed-text-sec: #7a7a7a;
+      --ed-text-dim: #3a3a3a;
+      --ed-border:   rgba(255, 255, 255, 0.07);
+      --ed-border-2: rgba(255, 255, 255, 0.3);
+      --ed-focus:    rgba(96, 165, 250, 0.5);
+      --sai-node:    #D99548;
+      --font-sans:   'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono:   'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+      --font-kana:   'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+      --radius:      2px;
+      --ease:        cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--font-sans);
+      background: var(--ed-bg);
+      color: var(--ed-text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    .kanji {
-      font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
-    }
+    .page { max-width: 1240px; margin: 0 auto; padding: 0 48px; }
 
-    /* Nav */
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-d1 { transition-delay: 80ms; }
+    .reveal-d2 { transition-delay: 160ms; }
+    .reveal-d3 { transition-delay: 240ms; }
+
+    /* ===== NAV ===== */
     nav {
       position: fixed;
       inset: 0 0 auto 0;
       z-index: 100;
+      background: rgba(8, 8, 8, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--ed-border);
+    }
+
+    .nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 3rem;
-      background: rgba(7, 7, 11, 0.8);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+      height: 64px;
     }
 
-    .nav-logo {
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--text);
-      text-decoration: none;
+    .nav-brand {
       display: flex;
-      align-items: baseline;
-      gap: 0.35em;
+      align-items: center;
+      text-decoration: none;
     }
 
-    .nav-logo .k {
-      font-size: 1.05em;
-      color: var(--accent);
-      opacity: 0.35;
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
     }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--ed-text-sec);
+      text-decoration: none;
+      transition: color 220ms var(--ease);
+    }
+    .nav-links a:hover { color: var(--ed-text); }
 
     .nav-cta {
-      font-size: 0.8125rem;
+      background: var(--ed-text);
+      color: var(--ed-bg);
+      padding: 10px 20px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: 0.02em;
-      color: var(--text-sec);
+      border-radius: var(--radius);
       text-decoration: none;
-      border: 1px solid var(--border);
-      padding: 0.5rem 1.25rem;
-      border-radius: 2px;
-      transition: border-color 0.2s, color 0.2s;
+      transition: opacity 150ms var(--ease);
     }
-    .nav-cta:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+    .nav-cta:hover { opacity: 0.85; }
 
-    /* Hero */
+    /* ===== HERO ===== */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 9rem 3rem 6rem;
+      padding: 160px 0 96px;
+      position: relative;
+    }
+
+    .hero-lens {
+      position: absolute;
+      top: 50%;
+      right: -80px;
+      transform: translateY(-55%);
+      width: 520px;
+      height: 520px;
+      opacity: 0;
+      transition: opacity 1.2s var(--ease);
+    }
+    .hero-lens.visible { opacity: 1; }
+    .hero-lens .amber {
+      animation: ambientPulse 4s var(--ease) infinite;
+    }
+
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0.35; }
+      50%      { opacity: 0.55; }
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ed-text-sec);
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: heroIn 600ms var(--ease) 200ms forwards;
+    }
+
+    .hero-h1 {
+      font-weight: 300;
+      font-size: clamp(3rem, 6vw, 88px);
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      margin: 0 0 28px;
       max-width: 900px;
-      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: heroIn 700ms var(--ease) 350ms forwards;
     }
 
     .hero-kana {
-      font-size: 1.5rem;
-      color: var(--text);
-      opacity: 0.2;
-      margin-bottom: 2.5rem;
+      font-family: var(--font-kana);
+      font-weight: 200;
+      opacity: 0.24;
+      font-size: clamp(3rem, 6vw, 96px);
+      margin-left: 16px;
     }
 
-    .hero-title {
-      font-size: clamp(3rem, 6vw, 5.5rem);
+    .hero-lede {
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--ed-text-sec);
+      max-width: 560px;
+      margin: 0 0 40px;
       font-weight: 300;
-      letter-spacing: -0.035em;
-      line-height: 1.06;
-      margin-bottom: 2.25rem;
-      max-width: 760px;
-    }
-
-    .hero-sub {
-      font-size: 1.0625rem;
-      color: var(--text-sec);
-      max-width: 400px;
-      line-height: 1.85;
-      margin-bottom: 3.5rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: heroIn 600ms var(--ease) 550ms forwards;
     }
 
     .hero-actions {
       display: flex;
-      gap: 1.25rem;
+      gap: 20px;
       align-items: center;
       flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: heroIn 600ms var(--ease) 700ms forwards;
+    }
+
+    @keyframes heroIn {
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .btn-primary {
-      background: var(--text);
-      color: #080808;
-      font-size: 0.875rem;
+      display: inline-block;
+      background: var(--ed-text);
+      color: var(--ed-bg);
+      padding: 14px 30px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 14px;
       font-weight: 500;
-      letter-spacing: 0.02em;
-      padding: 0.8rem 1.875rem;
-      border-radius: 2px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: opacity 150ms var(--ease), transform 150ms var(--ease);
     }
-    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
 
     .btn-text {
-      font-size: 0.875rem;
-      color: var(--text-sec);
+      color: var(--ed-text-sec);
       text-decoration: none;
-      transition: color 0.15s;
+      font-size: 14px;
+      transition: color 150ms var(--ease), letter-spacing 300ms var(--ease);
     }
-    .btn-text:hover { color: var(--text); }
+    .btn-text:hover { color: var(--ed-text); letter-spacing: 0.03em; }
 
-    /* Section */
-    .section {
-      padding: 8rem 3rem;
-      max-width: 900px;
-      margin: 0 auto;
+    /* ===== STATS ===== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--ed-border);
+      border: 1px solid var(--ed-border);
+      margin-bottom: 96px;
     }
 
-    .label {
-      font-size: 0.6875rem;
-      font-weight: 500;
+    .stat {
+      background: var(--ed-bg);
+      padding: 36px 28px;
+      transition: background 300ms var(--ease);
+    }
+    .stat:hover { background: #0c0c0c; border-bottom: 2px solid var(--sai-node); }
+
+    .stat-v {
+      font-weight: 200;
+      font-size: 48px;
+      letter-spacing: -0.03em;
+      color: var(--ed-text);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .stat-l {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ed-text-sec);
+    }
+
+    /* Scenario cycling */
+    .stat-cycle {
+      position: relative;
+      height: 1.1em;
+      overflow: hidden;
+    }
+
+    .stat-cycle span {
+      display: block;
+      position: absolute;
+      inset: 0;
+      transition: transform 400ms var(--ease), opacity 400ms var(--ease);
+    }
+
+    .stat-cycle span.cycle-out {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    .stat-cycle span.cycle-in {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    .stat-cycle span.cycle-active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ===== SPLIT ===== */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      padding: 48px 0;
+      border-top: 1px solid var(--ed-border);
+      margin-bottom: 96px;
+    }
+
+    .split-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--text-sec);
-      margin-bottom: 3rem;
+      color: var(--ed-text-sec);
+      margin-bottom: 14px;
     }
 
-    .section-title {
-      font-size: clamp(1.875rem, 3.5vw, 2.875rem);
+    .split-h {
       font-weight: 300;
+      font-size: 36px;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      margin: 0 0 20px;
+    }
+
+    .split-body {
+      color: var(--ed-text-sec);
+      font-size: 16px;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 96px;
+    }
+
+    .feature {
+      border: 1px solid var(--ed-border);
+      padding: 32px 28px;
+      border-radius: var(--radius);
+      background: #0a0a0a;
+      transition: border-color 300ms var(--ease), transform 300ms var(--ease), background 300ms var(--ease);
+    }
+    .feature:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+      transform: translateY(-4px);
+      background: #0e0e0e;
+    }
+
+    .feature-n {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--sai-node);
+      margin-bottom: 20px;
+    }
+
+    .feature-h {
+      font-weight: 400;
+      font-size: 18px;
+      margin: 0 0 10px;
+    }
+
+    .feature-b {
+      font-size: 13px;
+      color: var(--ed-text-sec);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ===== QUOTE ===== */
+    .quote {
+      padding: 64px 0;
+      text-align: center;
+      border-top: 1px solid var(--ed-border);
+      border-bottom: 1px solid var(--ed-border);
+      margin-bottom: 96px;
+    }
+
+    .quote-text {
+      font-weight: 200;
+      font-size: 34px;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      max-width: 900px;
+      margin: 0 auto 22px;
+    }
+
+    .quote-cite {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ed-text-sec);
+    }
+
+    /* ===== DEMO ===== */
+    .demo-section {
+      padding: 48px 0;
+      border-top: 1px solid var(--ed-border);
+      margin-bottom: 96px;
+    }
+
+    .demo-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ed-text-sec);
+      margin-bottom: 14px;
+    }
+
+    .demo-h {
+      font-weight: 300;
+      font-size: clamp(1.875rem, 3.5vw, 2.875rem);
       letter-spacing: -0.025em;
       line-height: 1.12;
       margin-bottom: 1.5rem;
     }
 
-    .section-body {
+    .demo-body {
       font-size: 1.0625rem;
-      color: var(--text-sec);
+      color: var(--ed-text-sec);
       max-width: 520px;
       line-height: 1.85;
+      margin-bottom: 2.5rem;
     }
 
-    /* Pillars */
-    .pillars {
-      margin-top: 5rem;
+    .btn-outline {
+      display: inline-block;
+      background: var(--ed-surface);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      padding: 14px 28px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ed-text);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: border-color 220ms var(--ease), transform 220ms var(--ease);
+    }
+    .btn-outline:hover { border-color: var(--ed-border-2); transform: translateY(-1px); }
+
+    /* ===== CTA BAND ===== */
+    .cta-band {
+      padding: 80px 48px;
+      border: 1px solid var(--ed-border);
+      border-radius: var(--radius);
+      text-align: center;
+      background: linear-gradient(180deg, #0a0a0a, var(--ed-bg));
+      margin-bottom: 96px;
     }
 
-    .pillar {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 2rem;
-      padding: 2.5rem 0;
-      border-top: 1px solid var(--border);
-      align-items: start;
+    .cta-kana {
+      font-family: var(--font-kana);
+      font-weight: 200;
+      font-size: 64px;
+      color: var(--ed-text);
+      opacity: 0.2;
+      line-height: 1;
+      margin-bottom: 12px;
     }
 
-    .pillar:last-child {
-      border-bottom: 1px solid var(--border);
+    .cta-h {
+      font-weight: 300;
+      font-size: 44px;
+      letter-spacing: -0.025em;
+      margin: 0 0 18px;
     }
 
-    .pillar-title {
-      font-size: 0.9375rem;
-      font-weight: 400;
-      color: var(--text);
-    }
-
-    .pillar-body {
-      font-size: 0.9375rem;
-      color: var(--text-sec);
-      line-height: 1.75;
-    }
-
-    /* Divider */
-    .rule {
-      border: none;
-      border-top: 1px solid var(--border);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    /* Form section */
-    .form-section {
-      padding: 8rem 3rem;
+    .cta-sub {
+      color: var(--ed-text-sec);
+      font-size: 15px;
       max-width: 560px;
-      margin: 0 auto;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+      font-weight: 300;
     }
 
-    .form-section .section-body {
-      margin-bottom: 3rem;
+    /* ===== FORM ===== */
+    .form-wrap {
+      max-width: 460px;
+      margin: 0 auto;
+      text-align: left;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     label {
-      font-size: 0.8125rem;
+      font-size: 13px;
       font-weight: 400;
       letter-spacing: 0.02em;
-      color: var(--text-sec);
+      color: var(--ed-text-sec);
     }
 
-    .req { color: var(--text-sec); margin-left: 0.15em; }
+    .req { color: var(--ed-text-sec); margin-left: 0.15em; }
 
     .opt {
-      font-size: 0.75rem;
-      color: var(--text-dim);
+      font-size: 11px;
+      color: var(--ed-text-dim);
       margin-left: 0.4em;
     }
 
     input[type="email"],
     select,
     textarea {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.9375rem;
-      padding: 0.8rem 1rem;
+      background: var(--ed-surface);
+      border: 1px solid var(--ed-border);
+      border-radius: var(--radius);
+      color: var(--ed-text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      padding: 12px 16px;
       width: 100%;
-      transition: border-color 0.15s;
+      transition: border-color 150ms var(--ease);
       appearance: none;
       -webkit-appearance: none;
     }
@@ -270,10 +521,10 @@
     select:focus,
     textarea:focus {
       outline: none;
-      border-color: rgba(96, 165, 250, 0.5);
+      border-color: var(--ed-focus);
     }
 
-    input::placeholder { color: var(--text-dim); }
+    input::placeholder { color: var(--ed-text-dim); }
 
     .select-wrap { position: relative; }
     .select-wrap::after {
@@ -282,36 +533,36 @@
       right: 1rem;
       top: 50%;
       transform: translateY(-50%) rotate(90deg);
-      color: var(--text-dim);
+      color: var(--ed-text-dim);
       pointer-events: none;
       font-size: 1rem;
     }
     .select-wrap select { padding-right: 2.5rem; cursor: pointer; }
 
-    select option { background: #0e0e14; color: var(--text); }
+    select option { background: #0e0e14; color: var(--ed-text); }
 
-    textarea { resize: vertical; min-height: 110px; }
+    textarea { resize: vertical; min-height: 100px; }
 
     .submit-btn {
-      background: var(--text);
-      color: #080808;
+      background: var(--ed-text);
+      color: var(--ed-bg);
       border: none;
-      border-radius: 2px;
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.9375rem;
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 14px;
       font-weight: 500;
-      letter-spacing: 0.02em;
-      padding: 0.9375rem;
+      letter-spacing: 0.01em;
+      padding: 14px;
       cursor: pointer;
-      transition: opacity 0.15s;
-      margin-top: 0.5rem;
+      transition: opacity 150ms var(--ease), transform 150ms var(--ease);
+      margin-top: 0.25rem;
     }
-    .submit-btn:hover { opacity: 0.85; }
-    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .submit-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
     .form-note {
-      font-size: 0.75rem;
-      color: var(--text-dim);
+      font-size: 12px;
+      color: var(--ed-text-dim);
       text-align: center;
       letter-spacing: 0.01em;
     }
@@ -324,8 +575,10 @@
     .form-success.show { display: block; }
 
     .success-glyph {
+      font-family: var(--font-kana);
+      font-weight: 200;
       font-size: 2rem;
-      color: var(--text);
+      color: var(--ed-text);
       opacity: 0.3;
       margin-bottom: 1.25rem;
     }
@@ -339,13 +592,13 @@
 
     .success-sub {
       font-size: 0.9rem;
-      color: var(--text-sec);
+      color: var(--ed-text-sec);
     }
 
-    /* Footer */
+    /* ===== FOOTER ===== */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
+      border-top: 1px solid var(--ed-border);
+      padding: 32px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -354,192 +607,310 @@
     }
 
     .footer-brand {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-sec);
       display: flex;
-      align-items: baseline;
-      gap: 0.3em;
+      align-items: center;
+      gap: 10px;
     }
-    .footer-brand .k {
-      color: var(--text);
-      opacity: 0.2;
+
+    .footer-brand svg { color: var(--ed-text); }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ed-text-dim);
+    }
+
+    .footer-kana {
+      font-family: var(--font-kana);
+      font-size: 16px;
+      opacity: 0.4;
+      color: var(--ed-text);
     }
 
     .footer-copy {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      letter-spacing: 0.02em;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ed-text-dim);
     }
 
-    /* Responsive */
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; gap: 24px; }
+      .features { grid-template-columns: 1fr; }
+      .hero-lens { display: none; }
+    }
+
     @media (max-width: 640px) {
-      nav { padding: 1.125rem 1.5rem; }
-      .hero { padding: 7rem 1.5rem 4rem; }
-      .section { padding: 5rem 1.5rem; }
-      .form-section { padding: 5rem 1.5rem; }
-      footer { padding: 1.5rem; }
-      .pillar { grid-template-columns: 1fr; gap: 0.625rem; padding: 1.875rem 0; }
+      .page { padding: 0 24px; }
+      .nav-inner { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 120px 0 64px; }
+      .hero-h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
+      .hero-kana { font-size: clamp(2.25rem, 8vw, 3.5rem); display: block; margin-left: 0; margin-top: 8px; }
+      .stat-v { font-size: 36px; }
+      .split-h { font-size: 28px; }
+      .quote-text { font-size: 24px; }
+      .cta-band { padding: 48px 24px; }
+      .cta-h { font-size: 32px; }
+      footer { padding: 24px 0; }
     }
   </style>
 </head>
 <body>
 
+  <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo">Sai <span class="k kanji">際</span></a>
-    <a href="#access" class="nav-cta">Get Early Access</a>
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">
+        <svg viewBox="0 0 120 40" width="120" height="40" fill="none" style="overflow:visible;display:block;">
+          <g transform="translate(20,20)">
+            <path d="M 12.8 -9.6 A 16 16 0 1 0 14.0 -5.4" stroke="#f0f0f0" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+            <circle cx="14.0" cy="-5.4" r="1.8" fill="#D99548"/>
+          </g>
+          <text x="50" y="26" font-family="'Inter', system-ui, sans-serif" font-weight="200" font-size="26" letter-spacing="4" fill="#f0f0f0">sai</text>
+        </svg>
+      </a>
+      <div class="nav-links">
+        <a href="#what">Product</a>
+        <a href="#demo">Demo</a>
+        <a href="#access" class="nav-cta">Early access</a>
+      </div>
+    </div>
   </nav>
 
-  <section class="hero">
-    <div class="hero-kana kanji">際</div>
-    <h1 class="hero-title">We design the moments<br>that matter</h1>
-    <p class="hero-sub">
-      Sai gives commercial drones autonomous decision-making.
-      No hardware replacement. No continuous oversight.
-    </p>
-    <div class="hero-actions">
-      <a href="#access" class="btn-primary">Get Early Access</a>
-      <a href="demo.html" class="btn-text">Try the demo →</a>
-    </div>
-  </section>
+  <div class="page">
 
-  <hr class="rule" />
+    <!-- HERO -->
+    <section class="hero">
+      <svg class="hero-lens" viewBox="0 0 520 520" fill="none">
+        <path d="M 410 135 A 200 200 0 1 0 425 175" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <circle class="amber" cx="425" cy="175" r="4" fill="#D99548"/>
+      </svg>
 
-  <section class="section" id="what">
-    <p class="label">What is Sai</p>
-    <h2 class="section-title">The decision layer<br>for autonomous drones</h2>
-    <p class="section-body">
-      A mission computer add-on that gives your drone the ability to act
-      without waiting for instructions. Install it, define your mission,
-      and let it decide.
-    </p>
-
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-title">Works with your hardware</div>
-        <div class="pillar-body">
-          Built on MAVLink. Compatible with PX4-based and ArduPilot platforms.
-          Nothing to replace, nothing to relearn.
-        </div>
+      <div class="hero-eyebrow">Sai <span style="color:var(--sai-node);font-family:var(--font-kana);font-weight:300;letter-spacing:0;">際</span> — Decision layer for autonomous flight</div>
+      <h1 class="hero-h1">We design the moments that matter<span class="hero-kana">際</span></h1>
+      <p class="hero-lede">
+        Sai gives commercial drones autonomous decision-making.<br>
+        No hardware replacement. No continuous oversight.
+      </p>
+      <div class="hero-actions">
+        <a href="#access" class="btn-primary">Request early access</a>
+        <a href="demo.html" class="btn-text">See the demo →</a>
       </div>
-      <div class="pillar">
-        <div class="pillar-title">Any mission</div>
-        <div class="pillar-body">
-          Construction inspection, infrastructure monitoring, search and rescue.
-          Mission logic is composable and built to your scenario.
-        </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-v">MAVLink</div>
+        <div class="stat-l">Protocol</div>
       </div>
-      <div class="pillar">
-        <div class="pillar-title">Verifiable decisions</div>
-        <div class="pillar-body">
-          Every decision is tested and traceable. Not a black box.
+      <div class="stat">
+        <div class="stat-v">0</div>
+        <div class="stat-l">Hardware to replace</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v stat-cycle" id="scenarioCycle">
+          <span class="cycle-active">Construction</span>
         </div>
+        <div class="stat-l">Scenarios</div>
       </div>
     </div>
-  </section>
 
-  <hr class="rule" />
-
-  <section class="section" id="demo">
-    <p class="label">See it in action</p>
-    <h2 class="section-title">Run a mission yourself</h2>
-    <p class="section-body">
-      Configure a scenario, set the autonomy threshold, and watch the decision layer
-      handle routine events — escalating to you only when judgment is needed.
-    </p>
-    <a href="demo.html" style="display:inline-block;margin-top:2.5rem;background:var(--surface);border:1px solid rgba(255,255,255,0.12);border-radius:2px;padding:1rem 1.75rem;font-size:0.875rem;font-weight:500;color:var(--text);text-decoration:none;letter-spacing:0.02em;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
-      Launch scenario simulation →
-    </a>
-  </section>
-
-  <hr class="rule" />
-
-  <section class="form-section" id="access">
-    <p class="label">Early Access</p>
-    <h2 class="section-title">Request early access</h2>
-    <p class="section-body">
-      We're building with a small group of early partners.
-      Tell us about your operation.
-    </p>
-
-    <form id="earlyAccessForm" action="https://formspree.io/f/mqegwvev" method="POST" novalidate>
-
-      <div class="field">
-        <label for="email">Email <span class="req">*</span></label>
-        <input type="email" id="email" name="email" placeholder="you@company.com" required />
+    <!-- SPLIT STATEMENT -->
+    <div class="split reveal" id="what">
+      <div>
+        <div class="split-tag">Philosophy</div>
+        <h2 class="split-h">PX4 flies. Sai decides.</h2>
       </div>
-
-      <div class="field">
-        <label for="role">Your role <span class="req">*</span></label>
-        <div class="select-wrap">
-          <select id="role" name="role" required>
-            <option value="" disabled selected>Select your role</option>
-            <option value="site_manager">Site Manager</option>
-            <option value="drone_operator">Drone Operator</option>
-            <option value="systems_integrator">Systems Integrator</option>
-            <option value="researcher">Researcher</option>
-            <option value="investor">Investor</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
+      <div class="split-body">
+        Sai is a decision layer, not a flight controller. Your autopilot keeps doing what it does well.
+        Sai watches the world around the mission, names the decisive instant when something changes,
+        and acts in milliseconds, or hands it back to you if that's what the moment calls for.
       </div>
-
-      <div class="field">
-        <label for="platform">Drone platform <span class="req">*</span></label>
-        <div class="select-wrap">
-          <select id="platform" name="platform" required>
-            <option value="" disabled selected>Select platform</option>
-            <option value="px4">PX4-based</option>
-            <option value="ardupilot">ArduPilot</option>
-            <option value="dji">DJI</option>
-            <option value="none">None yet</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="pain">
-          What's your biggest operational pain point?
-          <span class="opt">optional</span>
-        </label>
-        <textarea id="pain" name="pain_point" placeholder="Describe your current challenges..."></textarea>
-      </div>
-
-      <div class="field">
-        <label for="scenario">
-          Scenario you're most interested in
-          <span class="opt">optional</span>
-        </label>
-        <div class="select-wrap">
-          <select id="scenario" name="scenario">
-            <option value="" disabled selected>Select a scenario</option>
-            <option value="construction">Construction site inspection</option>
-            <option value="power">Power line inspection</option>
-            <option value="agriculture">Agriculture</option>
-            <option value="sar">Search &amp; Rescue</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit" class="submit-btn" id="submitBtn">Request Early Access</button>
-      <p class="form-note">No spam. We'll reach out personally.</p>
-    </form>
-
-    <div class="form-success" id="formSuccess">
-      <div class="success-glyph kanji">際</div>
-      <div class="success-title">You're on the list.</div>
-      <div class="success-sub">We'll be in touch.</div>
     </div>
-  </section>
 
-  <footer>
-    <div class="footer-brand">Sai <span class="k kanji">際</span></div>
-    <div class="footer-copy">© 2026 Sai Autonomy</div>
-  </footer>
+    <!-- FEATURES -->
+    <div class="features">
+      <div class="feature reveal reveal-d1">
+        <div class="feature-n">01</div>
+        <h3 class="feature-h">Verifiable decisions</h3>
+        <div class="feature-b">Every decision point is traceable. Named, logged, replayable. Not a black box.</div>
+      </div>
+      <div class="feature reveal reveal-d2">
+        <div class="feature-n">02</div>
+        <h3 class="feature-h">Drop-in integration</h3>
+        <div class="feature-b">Nothing to replace, nothing to relearn. Mounts to the airframe, talks over MAVLink.</div>
+      </div>
+      <div class="feature reveal reveal-d3">
+        <div class="feature-n">03</div>
+        <h3 class="feature-h">Mission-composable</h3>
+        <div class="feature-b">Construction inspection, infrastructure monitoring, search and rescue. Mission logic is composable and built to your scenario.</div>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="quote reveal">
+      <div class="quote-text">One decision, at the <span style="color:var(--sai-node)">right instant</span>, changes everything.</div>
+    </div>
+
+    <!-- DEMO -->
+    <section class="demo-section reveal" id="demo">
+      <div class="demo-tag">See it in action</div>
+      <h2 class="demo-h">Run a mission yourself</h2>
+      <p class="demo-body">
+        Configure a scenario, set the autonomy threshold, and watch the decision layer
+        handle routine events — escalating to you only when judgment is needed.
+      </p>
+      <a href="demo.html" class="btn-outline">Launch scenario simulation →</a>
+    </section>
+
+    <!-- CTA BAND -->
+    <div class="cta-band reveal" id="access">
+      <div class="cta-kana">際</div>
+      <h2 class="cta-h">Join the pilots</h2>
+      <div class="cta-sub">Early access for integrators shipping real missions.<br>We're selecting a small first cohort.</div>
+
+      <div class="form-wrap">
+        <form id="earlyAccessForm" action="https://formspree.io/f/mqegwvev" method="POST" novalidate>
+
+          <div class="field">
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" placeholder="you@company.com" required />
+          </div>
+
+          <div class="field">
+            <label for="role">Your role <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select id="role" name="role" required>
+                <option value="" disabled selected>Select your role</option>
+                <option value="site_manager">Site Manager</option>
+                <option value="drone_operator">Drone Operator</option>
+                <option value="systems_integrator">Systems Integrator</option>
+                <option value="researcher">Researcher</option>
+                <option value="investor">Investor</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="platform">Drone platform <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select id="platform" name="platform" required>
+                <option value="" disabled selected>Select platform</option>
+                <option value="px4">PX4-based</option>
+                <option value="ardupilot">ArduPilot</option>
+                <option value="dji">DJI</option>
+                <option value="none">None yet</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pain">
+              What's your biggest operational pain point?
+              <span class="opt">optional</span>
+            </label>
+            <textarea id="pain" name="pain_point" placeholder="Describe your current challenges..."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="scenario">
+              Scenario you're most interested in
+              <span class="opt">optional</span>
+            </label>
+            <div class="select-wrap">
+              <select id="scenario" name="scenario">
+                <option value="" disabled selected>Select a scenario</option>
+                <option value="construction">Construction site inspection</option>
+                <option value="power">Power line inspection</option>
+                <option value="agriculture">Agriculture</option>
+                <option value="sar">Search &amp; Rescue</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Request early access</button>
+          <p class="form-note">No spam. We'll reach out personally.</p>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div class="success-glyph">際</div>
+          <div class="success-title">You're on the list</div>
+          <div class="success-sub">We'll be in touch.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-brand">
+        <svg viewBox="0 0 240 240" width="20" height="20" fill="none">
+          <path d="M 193.06 75.78 A 88 88 0 1 0 200.11 100.05" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <circle cx="200.11" cy="100.05" r="3.5" fill="#D99548"/>
+        </svg>
+        <span class="footer-text">Sai Autonomy</span>
+      </div>
+      <div class="footer-kana">際</div>
+      <div class="footer-copy">&copy; 2026</div>
+    </footer>
+
+  </div>
 
   <script>
+    /* Scroll reveal */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* Hero lens fade-in */
+    requestAnimationFrame(() => {
+      const lens = document.querySelector('.hero-lens');
+      if (lens) lens.classList.add('visible');
+    });
+
+    /* Scenario cycling */
+    const scenarios = ['Construction', 'Infrastructure', 'Power line', 'Agriculture', 'Search & Rescue'];
+    let idx = 0;
+    const cycleEl = document.getElementById('scenarioCycle');
+
+    setInterval(() => {
+      const current = cycleEl.querySelector('.cycle-active');
+      current.classList.remove('cycle-active');
+      current.classList.add('cycle-out');
+
+      const next = document.createElement('span');
+      idx = (idx + 1) % scenarios.length;
+      next.textContent = scenarios[idx];
+      next.classList.add('cycle-in');
+      cycleEl.appendChild(next);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          next.classList.remove('cycle-in');
+          next.classList.add('cycle-active');
+        });
+      });
+
+      setTimeout(() => current.remove(), 500);
+    }, 2400);
+
+    /* Form submit */
     const form    = document.getElementById('earlyAccessForm');
     const btn     = document.getElementById('submitBtn');
     const success = document.getElementById('formSuccess');
@@ -549,7 +920,7 @@
       if (!form.email.value.trim() || !form.role.value || !form.platform.value) return;
 
       btn.disabled = true;
-      btn.textContent = 'Sending…';
+      btn.textContent = 'Sending\u2026';
 
       try {
         const res = await fetch(form.action, {
@@ -562,11 +933,11 @@
           success.classList.add('show');
         } else {
           btn.disabled = false;
-          btn.textContent = 'Request Early Access';
+          btn.textContent = 'Request early access';
         }
       } catch {
         btn.disabled = false;
-        btn.textContent = 'Request Early Access';
+        btn.textContent = 'Request early access';
       }
     });
   </script>
