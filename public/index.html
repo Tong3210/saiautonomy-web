@@ -3,949 +3,401 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sai — We design the moments that matter</title>
+  <title>Sai autonomy</title>
   <meta name="description" content="An onboard decision layer for commercial drones. Sai makes the in-flight calls the mission plan can't anticipate, and keeps a record of each one." />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='12' fill='%23111417'/%3E%3Cpath d='M 51.5 20.2 A 23 23 0 1 0 53.4 26.7' stroke='%23E8EAF0' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='53.4' cy='26.7' r='2.5' fill='%23D99548'/%3E%3C/svg%3E" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f5" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2a4f7b" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='24' fill='%23ffffff'/%3E%3Cg fill='%232a4f7b' transform='translate(31 13) scale(0.98)'%3E%3Cpath d='M0.05 101.56H4.42V0.04H0.05Z'/%3E%3Cpath d='M9.9 65.05H14.27V0.04H9.9Z'/%3E%3Cpath d='M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z'/%3E%3Cpath d='M23.6 55.13H83.27V50.76H23.6Z'/%3E%3Cpath d='M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z'/%3E%3Cpath d='M23.6 90.39H27.97V76.13H23.6Z'/%3E%3Cpath d='M78.9 90.39H83.27V76.13H78.9Z'/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet" />
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    /* tokens */
     :root {
-      --ed-bg:       #080808;
-      --ed-surface:  #111111;
-      --ed-text:     #f0f0f0;
-      --ed-text-sec: #7a7a7a;
-      --ed-text-dim: #3a3a3a;
-      --ed-border:   rgba(255, 255, 255, 0.07);
-      --ed-border-2: rgba(255, 255, 255, 0.3);
-      --ed-focus:    rgba(96, 165, 250, 0.5);
-      --sai-node:    #D99548;
-      --font-sans:   'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono:   'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
-      --font-kana:   'Noto Serif JP', 'Hiragino Mincho ProN', serif;
-      --radius:      2px;
-      --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+      --blue:      #2a4f7b;
+      --grey-1:    #dbdcdc;
+      --grey-2:    #9e9e9f;
+      --paper:     #f7f7f5;
+      --paper-2:   #efefec;
+      --ink:       #1f2326;
+      --ink-2:     #5c6166;
+      --line:      #dbdcdc;
+      --line-2:    #c4c6c8;
+      --accent:    var(--blue);
+      --on-accent: #ffffff;
+
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --cjk:  'Noto Sans CJK TC', 'PingFang TC', 'Hiragino Sans', 'Microsoft JhengHei', system-ui, sans-serif;
+
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --t-quick: 160ms;
+      --t-std:   420ms;
+      --t-slow:  700ms;
+
+      --gutter: clamp(16px, 5vw, 72px);
+      --max: 1280px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper:   #2a4f7b;
+        --paper-2: #26476f;
+        --ink:     #f2f2f0;
+        --ink-2:   #b9c2cc;
+        --line:    rgba(219, 220, 220, 0.28);
+        --line-2:  rgba(219, 220, 220, 0.45);
+        --accent:  #dbdcdc;
+        --on-accent: #2a4f7b;
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper:   #2a4f7b;
+      --paper-2: #26476f;
+      --ink:     #f2f2f0;
+      --ink-2:   #b9c2cc;
+      --line:    rgba(219, 220, 220, 0.28);
+      --line-2:  rgba(219, 220, 220, 0.45);
+      --accent:  #dbdcdc;
+      --on-accent: #2a4f7b;
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
-      font-family: var(--font-sans);
-      background: var(--ed-bg);
-      color: var(--ed-text);
-      line-height: 1.6;
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--paper);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
     }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+    .mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-2); }
+    .cjk { font-family: var(--cjk); text-transform: none; letter-spacing: 0.18em; }
+    .rule { height: 1px; background: var(--line); transform-origin: left; }
 
-    .page { max-width: 1240px; margin: 0 auto; padding: 0 48px; }
+    /* ---------- nav ---------- */
+    nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--accent); }
+    .brand svg { height: 30px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 28px; align-items: center; font-size: 14px; color: var(--ink-2); }
+    .nav-links a { transition: color var(--t-quick) var(--ease); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { color: var(--ink); border: 1px solid var(--line-2); padding: 8px 14px; border-radius: 2px; transition: border-color var(--t-quick) var(--ease), background var(--t-quick) var(--ease); }
+    .nav-cta:hover { border-color: var(--ink); }
+    nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 
-    /* ===== SCROLL REVEAL ===== */
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 600ms var(--ease), transform 600ms var(--ease);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-d1 { transition-delay: 80ms; }
-    .reveal-d2 { transition-delay: 160ms; }
-    .reveal-d3 { transition-delay: 240ms; }
-
-    /* ===== NAV ===== */
-    nav {
-      position: fixed;
-      inset: 0 0 auto 0;
-      z-index: 100;
-      background: rgba(8, 8, 8, 0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--ed-border);
-    }
-
-    .nav-inner {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 0 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      font-size: 13px;
-      color: var(--ed-text-sec);
-      text-decoration: none;
-      transition: color 220ms var(--ease);
-    }
-    .nav-links a:hover { color: var(--ed-text); }
-
-    .nav-cta {
-      background: var(--ed-text);
-      color: var(--ed-bg);
-      padding: 10px 20px;
-      font-size: 13px;
+    /* ---------- hero ---------- */
+    .hero { padding: clamp(56px, 10vh, 120px) 0 clamp(48px, 8vh, 96px); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 64px); align-items: end; }
+    .mark { color: var(--accent); width: clamp(96px, 12vw, 150px); height: auto; display: block; margin-bottom: clamp(28px, 4vh, 48px); }
+    .h1 {
+      font-size: clamp(40px, 6.2vw, 84px);
       font-weight: 500;
-      border-radius: var(--radius);
-      text-decoration: none;
-      transition: opacity 150ms var(--ease);
-    }
-    .nav-cta:hover { opacity: 0.85; }
-
-    /* ===== HERO ===== */
-    .hero {
-      padding: 160px 0 96px;
-      position: relative;
-    }
-
-    .hero-lens {
-      position: absolute;
-      top: 50%;
-      right: -80px;
-      transform: translateY(-55%);
-      width: 520px;
-      height: 520px;
-      opacity: 0;
-      transition: opacity 1.2s var(--ease);
-    }
-    .hero-lens.visible { opacity: 1; }
-    .hero-lens .amber {
-      animation: ambientPulse 4s var(--ease) infinite;
-    }
-
-    @keyframes ambientPulse {
-      0%, 100% { opacity: 0.35; }
-      50%      { opacity: 0.55; }
-    }
-
-    .hero-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ed-text-sec);
-      margin-bottom: 28px;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: heroIn 600ms var(--ease) 200ms forwards;
-    }
-
-    .hero-h1 {
-      font-weight: 300;
-      font-size: clamp(3rem, 6vw, 88px);
+      letter-spacing: -0.028em;
       line-height: 1.02;
-      letter-spacing: -0.035em;
-      margin: 0 0 28px;
-      max-width: 900px;
-      opacity: 0;
-      transform: translateY(16px);
-      animation: heroIn 700ms var(--ease) 350ms forwards;
+      max-width: 12ch;
+      color: var(--ink);
     }
+    .h1 .w { display: inline-block; animation: word-in var(--t-slow) var(--ease) both; }
+    .lede { margin-top: clamp(20px, 3vh, 32px); font-size: clamp(17px, 1.4vw, 21px); line-height: 1.5; color: var(--ink-2); max-width: 46ch; animation: fade-up var(--t-slow) var(--ease) 2.05s both; }
+    .lede b { font-weight: 500; color: var(--ink); }
+    .actions { margin-top: clamp(28px, 4vh, 44px); display: flex; gap: 22px; align-items: center; animation: fade-up var(--t-slow) var(--ease) 2.2s both; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--on-accent); padding: 14px 22px; border-radius: 2px; font-weight: 500; font-size: 15px; transition: transform var(--t-quick) var(--ease), opacity var(--t-quick) var(--ease); }
+    .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+    .btn:active { transform: translateY(0); transition-duration: 80ms; }
+    .link { font-size: 15px; color: var(--ink-2); border-bottom: 1px solid var(--line-2); padding-bottom: 2px; transition: color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease); }
+    .link:hover { color: var(--ink); border-color: var(--ink); }
 
-    .hero-kana {
-      font-family: var(--font-kana);
-      font-weight: 200;
-      opacity: 0.24;
-      font-size: clamp(3rem, 6vw, 96px);
-      margin-left: 16px;
+    /* ledger */
+    .ledger { display: grid; gap: 22px; padding-bottom: 6px; }
+    .ledger .row { display: grid; grid-template-columns: 56px 1fr; gap: 16px; align-items: end; }
+    .ledger .rule { animation: rule-in var(--t-slow) var(--ease) both; }
+    .ledger .row:nth-child(1) .rule { animation-delay: 1.9s; }
+    .ledger .row:nth-child(2) .rule { animation-delay: 2.0s; }
+    .ledger .row:nth-child(3) .rule { animation-delay: 2.1s; }
+    .ledger .row:nth-child(4) .rule { animation-delay: 2.2s; }
+    .ledger .row:nth-child(5) .rule { animation-delay: 2.3s; }
+    .ledger .mono { opacity: 0; animation: fade-in var(--t-std) var(--ease) 2.5s both; }
+    .ledger .row.live .mono { color: var(--accent); }
+    .ledger .row.live .rule { background: var(--accent); }
+
+    /* ---------- the moment (scroll-driven) ---------- */
+    .moment { view-timeline-name: --moment; view-timeline-axis: block; height: 320vh; position: relative; }
+    .moment .stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: center; }
+    .beats { position: relative; min-height: 220px; }
+    .beat { position: absolute; inset: 0; opacity: 0; animation: beat 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .beat .mono { display: flex; gap: 14px; align-items: baseline; margin-bottom: 18px; }
+    .beat h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; max-width: 14ch; }
+    .beat p { margin-top: 16px; color: var(--ink-2); max-width: 40ch; font-size: clamp(16px, 1.25vw, 19px); }
+    .beat-1 { --a: 2%; --b: 8%; --c: 30%; --d: 36%; }
+    .beat-2 { --a: 34%; --b: 40%; --c: 58%; --d: 64%; }
+    .beat-3 { --a: 62%; --b: 68%; --c: 100%; --d: 100%; }
+    .counter { position: absolute; left: 0; bottom: -40px; }
+    .scene { width: 100%; height: auto; display: block; color: var(--ink); }
+    .scene .plan   { stroke: var(--ink-2); }
+    .scene .world  { stroke: var(--ink-2); }
+    .scene .bound  { stroke: var(--accent); }
+    .scene .craft  { fill: var(--accent); }
+    .scene .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-scroll 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .scene .p1 { --from: 4%;  --to: 22%; }
+    .scene .p2 { --from: 10%; --to: 30%; }
+    .scene .p3 { --from: 16%; --to: 32%; }
+    .scene .b1 { --from: 38%; --to: 56%; }
+    .scene .craft { offset-path: path('M60 300 L200 150 L330 150 L380 185.7'); offset-rotate: 0deg; animation: travel 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .scene .hold { transform-box: fill-box; transform-origin: center; animation: hold 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .scene .ghost { animation: ghost 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .record { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 12px 18px; align-items: baseline; opacity: 0; animation: beat 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; --a: 78%; --b: 84%; --c: 100%; --d: 100%; }
+    .record .k { font-family: var(--mono); font-size: 12px; color: var(--ink-2); letter-spacing: 0.04em; }
+    .record .v { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+    .record .v em { font-style: normal; color: var(--accent); }
+
+    /* ---------- footer ---------- */
+    footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
+    .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+    .foot-brand svg { height: 28px; width: auto; color: var(--accent); }
+    .foot-brand p { margin-top: 14px; max-width: 30ch; }
+    .foot-col h4 { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
+    .foot-col a { display: block; margin-bottom: 8px; transition: color var(--t-quick) var(--ease); }
+    .foot-col a:hover { color: var(--ink); }
+    .foot-bottom { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; }
+    .theme-toggle { background: none; border: 1px solid var(--line-2); color: var(--ink-2); font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 2px; cursor: pointer; }
+
+    /* ---------- keyframes ---------- */
+    @keyframes draw    { to { stroke-dashoffset: 0; } }
+    @keyframes rule-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes word-in { from { opacity: 0; transform: translateY(0.35em); } to { opacity: 1; transform: none; } }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes beat {
+      0%, var(--a) { opacity: 0; transform: translateY(12px); }
+      var(--b), var(--c) { opacity: 1; transform: none; }
+      var(--d), 100% { opacity: 0; transform: translateY(-12px); }
     }
+    @keyframes draw-scroll { 0%, var(--from) { stroke-dashoffset: 1; } var(--to), 100% { stroke-dashoffset: 0; } }
+    @keyframes travel { 0%, 60% { offset-distance: 0%; opacity: 0; } 62% { opacity: 1; } 78%, 100% { offset-distance: 100%; opacity: 1; } }
+    @keyframes hold { 0%, 78% { opacity: 0; transform: scale(0.4); } 84% { opacity: 1; transform: scale(1.15); } 90%, 100% { opacity: 1; transform: scale(1); } }
+    @keyframes ghost { 0%, 78% { opacity: 0; } 86%, 100% { opacity: 0.55; } }
 
-    .hero-lede {
-      font-size: 19px;
-      line-height: 1.7;
-      color: var(--ed-text-sec);
-      max-width: 560px;
-      margin: 0 0 40px;
-      font-weight: 300;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: heroIn 600ms var(--ease) 550ms forwards;
+    /* mark */
+    .mark .s { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw var(--t-slow) var(--ease) both; }
+    .mark .a1 { animation-delay: 0.10s; animation-duration: 0.55s; }
+    .mark .a2 { animation-delay: 0.18s; animation-duration: 0.50s; }
+    .mark .b1 { animation-delay: 0.55s; animation-duration: 0.65s; }
+    .mark .b2 { animation-delay: 0.70s; animation-duration: 0.55s; }
+    .mark .b3 { animation-delay: 1.00s; animation-duration: 0.40s; }
+    .mark .b4 { animation-delay: 1.08s; animation-duration: 0.40s; }
+    .mark .c1 { animation-delay: 1.38s; animation-duration: 0.30s; }
+    .mark .c2 { animation-delay: 1.38s; animation-duration: 0.30s; }
+    .mark .c3 { animation-delay: 1.48s; animation-duration: 0.45s; }
+    .h1 .w:nth-child(1) { animation-delay: 1.55s; }
+    .h1 .w:nth-child(2) { animation-delay: 1.62s; }
+    .h1 .w:nth-child(3) { animation-delay: 1.69s; }
+    .h1 .w:nth-child(4) { animation-delay: 1.76s; }
+    .h1 .w:nth-child(5) { animation-delay: 1.83s; }
+    .h1 .w:nth-child(6) { animation-delay: 1.90s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .mark .s { stroke-dashoffset: 0; }
+      .h1 .w, .lede, .actions, .ledger .mono, .beat, .record { opacity: 1; transform: none; }
+      .scene .draw { stroke-dashoffset: 0; }
+      .scene .craft { offset-distance: 100%; }
+      .scene .hold, .scene .ghost { opacity: 1; }
+      .moment { height: auto; }
+      .moment .stage { position: static; height: auto; padding: 80px 0; }
+      .beats { min-height: 0; display: grid; gap: 40px; }
+      .beat { position: static; }
     }
-
-    .hero-actions {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      flex-wrap: wrap;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: heroIn 600ms var(--ease) 700ms forwards;
-    }
-
-    @keyframes heroIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .btn-primary {
-      display: inline-block;
-      background: var(--ed-text);
-      color: var(--ed-bg);
-      padding: 14px 30px;
-      border: none;
-      border-radius: var(--radius);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity 150ms var(--ease), transform 150ms var(--ease);
-    }
-    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
-
-    .btn-text {
-      color: var(--ed-text-sec);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 150ms var(--ease), letter-spacing 300ms var(--ease);
-    }
-    .btn-text:hover { color: var(--ed-text); letter-spacing: 0.03em; }
-
-    /* ===== STATS ===== */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--ed-border);
-      border: 1px solid var(--ed-border);
-      margin-bottom: 96px;
-    }
-
-    .stat {
-      background: var(--ed-bg);
-      padding: 36px 28px;
-      transition: background 300ms var(--ease);
-    }
-    .stat:hover { background: #0c0c0c; border-bottom: 2px solid var(--sai-node); }
-
-    .stat-v {
-      font-weight: 200;
-      font-size: 48px;
-      letter-spacing: -0.03em;
-      color: var(--ed-text);
-      line-height: 1;
-      margin-bottom: 10px;
-    }
-
-    .stat-l {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ed-text-sec);
-    }
-
-    /* Scenario cycling */
-    .stat-cycle {
-      position: relative;
-      height: 1.1em;
-      overflow: hidden;
-    }
-
-    .stat-cycle span {
-      display: block;
-      position: absolute;
-      inset: 0;
-      transition: transform 400ms var(--ease), opacity 400ms var(--ease);
-    }
-
-    .stat-cycle span.cycle-out {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    .stat-cycle span.cycle-in {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    .stat-cycle span.cycle-active {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    /* ===== SPLIT ===== */
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-      padding: 48px 0;
-      border-top: 1px solid var(--ed-border);
-      margin-bottom: 96px;
-    }
-
-    .split-tag {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ed-text-sec);
-      margin-bottom: 14px;
-    }
-
-    .split-h {
-      font-weight: 300;
-      font-size: 36px;
-      line-height: 1.15;
-      letter-spacing: -0.025em;
-      margin: 0 0 20px;
-    }
-
-    .split-body {
-      color: var(--ed-text-sec);
-      font-size: 16px;
-      line-height: 1.75;
-      font-weight: 300;
-    }
-
-    /* ===== FEATURES ===== */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 96px;
-    }
-
-    .feature {
-      border: 1px solid var(--ed-border);
-      padding: 32px 28px;
-      border-radius: var(--radius);
-      background: #0a0a0a;
-      transition: border-color 300ms var(--ease), transform 300ms var(--ease), background 300ms var(--ease);
-    }
-    .feature:hover {
-      border-color: rgba(255, 255, 255, 0.14);
-      transform: translateY(-4px);
-      background: #0e0e0e;
-    }
-
-    .feature-n {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--sai-node);
-      margin-bottom: 20px;
-    }
-
-    .feature-h {
-      font-weight: 400;
-      font-size: 18px;
-      margin: 0 0 10px;
-    }
-
-    .feature-b {
-      font-size: 13px;
-      color: var(--ed-text-sec);
-      line-height: 1.7;
-      font-weight: 300;
-    }
-
-    /* ===== QUOTE ===== */
-    .quote {
-      padding: 64px 0;
-      text-align: center;
-      border-top: 1px solid var(--ed-border);
-      border-bottom: 1px solid var(--ed-border);
-      margin-bottom: 96px;
-    }
-
-    .quote-text {
-      font-weight: 200;
-      font-size: 34px;
-      line-height: 1.3;
-      letter-spacing: -0.02em;
-      max-width: 900px;
-      margin: 0 auto 22px;
-    }
-
-    .quote-cite {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ed-text-sec);
-    }
-
-    /* ===== DEMO ===== */
-    .demo-section {
-      padding: 48px 0;
-      border-top: 1px solid var(--ed-border);
-      margin-bottom: 96px;
-    }
-
-    .demo-tag {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ed-text-sec);
-      margin-bottom: 14px;
-    }
-
-    .demo-h {
-      font-weight: 300;
-      font-size: clamp(1.875rem, 3.5vw, 2.875rem);
-      letter-spacing: -0.025em;
-      line-height: 1.12;
-      margin-bottom: 1.5rem;
-    }
-
-    .demo-body {
-      font-size: 1.0625rem;
-      color: var(--ed-text-sec);
-      max-width: 520px;
-      line-height: 1.85;
-      margin-bottom: 2.5rem;
-    }
-
-    .btn-outline {
-      display: inline-block;
-      background: var(--ed-surface);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius);
-      padding: 14px 28px;
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ed-text);
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: border-color 220ms var(--ease), transform 220ms var(--ease);
-    }
-    .btn-outline:hover { border-color: var(--ed-border-2); transform: translateY(-1px); }
-
-    /* ===== CTA BAND ===== */
-    .cta-band {
-      padding: 80px 48px;
-      border: 1px solid var(--ed-border);
-      border-radius: var(--radius);
-      text-align: center;
-      background: linear-gradient(180deg, #0a0a0a, var(--ed-bg));
-      margin-bottom: 96px;
-    }
-
-    .cta-kana {
-      font-family: var(--font-kana);
-      font-weight: 200;
-      font-size: 64px;
-      color: var(--ed-text);
-      opacity: 0.2;
-      line-height: 1;
-      margin-bottom: 12px;
-    }
-
-    .cta-h {
-      font-weight: 300;
-      font-size: 44px;
-      letter-spacing: -0.025em;
-      margin: 0 0 18px;
-    }
-
-    .cta-sub {
-      color: var(--ed-text-sec);
-      font-size: 15px;
-      max-width: 560px;
-      margin: 0 auto 32px;
-      line-height: 1.7;
-      font-weight: 300;
-    }
-
-    /* ===== FORM ===== */
-    .form-wrap {
-      max-width: 460px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    label {
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      color: var(--ed-text-sec);
-    }
-
-    .req { color: var(--ed-text-sec); margin-left: 0.15em; }
-
-    .opt {
-      font-size: 11px;
-      color: var(--ed-text-dim);
-      margin-left: 0.4em;
-    }
-
-    input[type="email"],
-    input[type="text"],
-    select,
-    textarea {
-      background: var(--ed-surface);
-      border: 1px solid var(--ed-border);
-      border-radius: var(--radius);
-      color: var(--ed-text);
-      font-family: var(--font-sans);
-      font-size: 15px;
-      padding: 12px 16px;
-      width: 100%;
-      transition: border-color 150ms var(--ease);
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    input[type="email"]:focus,
-    input[type="text"]:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--ed-focus);
-    }
-
-    input::placeholder { color: var(--ed-text-dim); }
-
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: '›';
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%) rotate(90deg);
-      color: var(--ed-text-dim);
-      pointer-events: none;
-      font-size: 1rem;
-    }
-    .select-wrap select { padding-right: 2.5rem; cursor: pointer; }
-
-    select option { background: #0e0e14; color: var(--ed-text); }
-
-    textarea { resize: vertical; min-height: 100px; }
-
-    .submit-btn {
-      background: var(--ed-text);
-      color: var(--ed-bg);
-      border: none;
-      border-radius: var(--radius);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      padding: 14px;
-      cursor: pointer;
-      transition: opacity 150ms var(--ease), transform 150ms var(--ease);
-      margin-top: 0.25rem;
-    }
-    .submit-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-    .form-note {
-      font-size: 12px;
-      color: var(--ed-text-dim);
-      text-align: center;
-      letter-spacing: 0.01em;
-    }
-
-    .form-error {
-      font-size: 12px;
-      color: var(--sai-node);
-      text-align: center;
-      letter-spacing: 0.01em;
-      margin: 0;
-    }
-    .form-error[hidden] { display: none; }
-
-    .cf-turnstile { min-height: 65px; }
-
-    /* Honeypot: off-screen for people, an ordinary field for bots. */
-    .hp {
-      position: absolute;
-      left: -10000px;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-    }
-
-    .form-success {
-      display: none;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-    .form-success.show { display: block; }
-
-    .success-glyph {
-      font-family: var(--font-kana);
-      font-weight: 200;
-      font-size: 2rem;
-      color: var(--ed-text);
-      opacity: 0.3;
-      margin-bottom: 1.25rem;
-    }
-
-    .success-title {
-      font-size: 1.25rem;
-      font-weight: 300;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.5rem;
-    }
-
-    .success-sub {
-      font-size: 0.9rem;
-      color: var(--ed-text-sec);
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      border-top: 1px solid var(--ed-border);
-      padding: 32px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .footer-brand svg { color: var(--ed-text); }
-
-    .footer-text {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ed-text-dim);
-    }
-
-    .footer-kana {
-      font-family: var(--font-kana);
-      font-size: 16px;
-      opacity: 0.4;
-      color: var(--ed-text);
-    }
-
-    .footer-copy {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ed-text-dim);
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
-      .stats { grid-template-columns: 1fr; }
-      .split { grid-template-columns: 1fr; gap: 24px; }
-      .features { grid-template-columns: 1fr; }
-      .hero-lens { display: none; }
-    }
-
-    @media (max-width: 640px) {
-      .page { padding: 0 24px; }
-      .nav-inner { padding: 0 24px; }
-      .nav-links { display: none; }
-      .hero { padding: 120px 0 64px; }
-      .hero-h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
-      .hero-kana { font-size: clamp(2.25rem, 8vw, 3.5rem); display: block; margin-left: 0; margin-top: 8px; }
-      .stat-v { font-size: 36px; }
-      .split-h { font-size: 28px; }
-      .quote-text { font-size: 24px; }
-      .cta-band { padding: 48px 24px; }
-      .cta-h { font-size: 32px; }
-      footer { padding: 24px 0; }
+    @media (max-width: 860px) {
+      .hero-grid, .moment .stage { grid-template-columns: 1fr; }
+      .ledger { display: none; }
+      .moment { height: auto; }
+      .moment .stage { position: static; height: auto; padding: 64px 0; gap: 40px; }
+      .beats { min-height: 0; display: grid; gap: 40px; }
+      .beat { position: static; opacity: 1; animation: none; transform: none; }
+      .counter { display: none; }
+      .scene .draw { stroke-dashoffset: 0; animation: none; }
+      .scene .craft { offset-distance: 100%; animation: none; opacity: 1; }
+      .scene .hold, .scene .ghost { opacity: 1; animation: none; transform: none; }
+      .record { opacity: 1; animation: none; }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { gap: 18px; }
+      .nav-links a:not(.nav-cta) { display: none; }
     }
   </style>
 </head>
 <body>
-
-  <!-- NAV -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="sai-mark" viewBox="0 0 83.3 101.6">
+      <path d="M0.05 101.56H4.42V0.04H0.05Z"/>
+      <path d="M9.9 65.05H14.27V0.04H9.9Z"/>
+      <path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/>
+      <path d="M23.6 55.13H83.27V50.76H23.6Z"/>
+      <path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/>
+      <path d="M23.6 90.39H27.97V76.13H23.6Z"/>
+      <path d="M78.9 90.39H83.27V76.13H78.9Z"/>
+    </symbol>
+    <symbol id="sai-lockup" viewBox="0 0 172 101.6">
+      <path d="M0.05 101.56H4.42V0.04H0.05Z"/>
+      <path d="M9.9 65.05H14.27V0.04H9.9Z"/>
+      <path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/>
+      <path d="M23.6 55.13H83.27V50.76H23.6Z"/>
+      <path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/>
+      <path d="M23.6 90.39H27.97V76.13H23.6Z"/>
+      <path d="M78.9 90.39H83.27V76.13H78.9Z"/>
+      <path d="M 104.979 45.502 C 104.541 44.904 103.983 44.603 103.303 44.603 C 102.873 44.603 102.514 44.728 102.221 44.978 C 101.928 45.228 101.780 45.564 101.780 45.978 C 101.780 46.400 102.311 46.896 103.381 47.470 C 104.448 48.045 104.987 48.334 104.998 48.334 C 105.752 48.877 106.131 49.517 106.131 50.255 C 106.131 51.263 105.830 52.084 105.225 52.709 C 104.623 53.330 103.795 53.642 102.745 53.642 C 101.413 53.642 100.362 53.002 99.592 51.720 L 100.694 50.681 C 100.842 51.060 101.112 51.408 101.510 51.720 C 101.905 52.037 102.311 52.193 102.729 52.193 C 103.225 52.193 103.616 52.033 103.905 51.705 C 104.194 51.380 104.338 50.982 104.338 50.517 C 104.338 50.177 104.229 49.884 104.014 49.627 C 103.799 49.373 103.077 48.982 101.838 48.455 C 100.600 47.927 99.983 47.177 99.983 46.201 C 99.983 45.365 100.268 44.662 100.838 44.091 C 101.409 43.521 102.123 43.236 102.983 43.236 C 104.166 43.236 105.104 43.607 105.795 44.341 Z M 104.979 45.502 "/>
+      <path d="M 113.721 50.158 C 113.721 49.560 113.545 49.068 113.194 48.685 C 112.846 48.298 112.397 48.107 111.850 48.107 C 111.299 48.107 110.854 48.295 110.510 48.666 C 110.166 49.041 109.995 49.541 109.995 50.158 C 109.995 50.775 110.170 51.275 110.518 51.654 C 110.870 52.037 111.319 52.224 111.873 52.224 C 112.428 52.224 112.873 52.041 113.213 51.673 C 113.549 51.302 113.721 50.798 113.721 50.158 M 115.143 53.591 L 113.534 53.591 L 113.534 52.795 C 113.057 53.326 112.354 53.591 111.416 53.591 C 110.479 53.591 109.733 53.248 109.174 52.552 C 108.612 51.857 108.334 51.041 108.334 50.107 C 108.334 49.177 108.620 48.380 109.190 47.724 C 109.760 47.068 110.491 46.736 111.381 46.736 C 112.330 46.736 113.049 47.009 113.534 47.552 L 113.534 46.736 L 115.143 46.736 Z M 115.143 53.591 "/>
+      <path d="M 120.088 53.591 L 118.444 53.591 L 118.444 46.736 L 120.088 46.736 Z M 120.225 44.244 C 120.225 44.498 120.127 44.713 119.936 44.896 C 119.745 45.084 119.518 45.173 119.256 45.173 C 118.998 45.173 118.772 45.084 118.580 44.896 C 118.389 44.713 118.291 44.498 118.291 44.244 C 118.291 43.998 118.389 43.779 118.580 43.595 C 118.772 43.408 118.998 43.318 119.256 43.318 C 119.518 43.318 119.745 43.408 119.936 43.595 C 120.127 43.779 120.225 43.998 120.225 44.244 "/>
+      <path d="M 104.983 66.084 C 104.983 65.486 104.807 64.994 104.455 64.607 C 104.104 64.224 103.655 64.033 103.108 64.033 C 102.561 64.033 102.116 64.216 101.772 64.591 C 101.428 64.966 101.256 65.466 101.256 66.084 C 101.256 66.701 101.432 67.201 101.780 67.580 C 102.131 67.963 102.580 68.150 103.135 68.150 C 103.686 68.150 104.135 67.966 104.471 67.595 C 104.811 67.228 104.983 66.724 104.983 66.084 M 106.405 69.517 L 104.795 69.517 L 104.795 68.720 C 104.323 69.252 103.616 69.517 102.678 69.517 C 101.741 69.517 100.991 69.173 100.432 68.478 C 99.873 67.783 99.596 66.966 99.596 66.033 C 99.596 65.099 99.881 64.306 100.452 63.646 C 101.018 62.990 101.752 62.662 102.643 62.662 C 103.592 62.662 104.311 62.935 104.795 63.478 L 104.795 62.662 L 106.405 62.662 Z M 106.405 69.517 "/>
+      <path d="M 120.479 69.517 L 118.834 69.517 L 118.834 63.947 L 117.561 63.947 L 117.561 62.662 L 118.834 62.662 L 118.834 60.693 L 120.479 60.693 L 120.479 62.662 L 121.784 62.662 L 121.784 63.947 L 120.479 63.947 Z M 120.479 69.517 "/>
+      <path d="M 125.100 66.107 C 125.100 66.709 125.276 67.201 125.627 67.580 C 125.979 67.963 126.428 68.150 126.983 68.150 C 127.534 68.150 127.979 67.947 128.311 67.541 C 128.647 67.134 128.811 66.650 128.811 66.091 C 128.811 65.533 128.643 65.048 128.303 64.642 C 127.963 64.236 127.522 64.029 126.975 64.029 C 126.428 64.029 125.979 64.228 125.627 64.619 C 125.276 65.009 125.100 65.505 125.100 66.107 M 130.471 66.084 C 130.471 67.091 130.151 67.920 129.506 68.556 C 128.862 69.201 128.018 69.517 126.975 69.517 C 125.928 69.517 125.080 69.201 124.424 68.556 C 123.768 67.920 123.444 67.095 123.444 66.091 C 123.444 65.088 123.764 64.263 124.409 63.623 C 125.053 62.982 125.901 62.662 126.948 62.662 C 127.998 62.662 128.850 62.982 129.498 63.615 C 130.147 64.252 130.471 65.072 130.471 66.084 "/>
+      <path d="M 134.705 63.459 C 135.170 62.931 135.850 62.662 136.756 62.662 C 138.291 62.662 139.057 63.568 139.057 65.384 L 139.057 69.517 L 137.432 69.517 L 137.432 65.904 C 137.432 64.548 136.998 63.869 136.127 63.869 C 135.178 63.869 134.705 64.595 134.705 66.048 L 134.705 69.517 L 133.065 69.517 L 133.065 62.662 L 134.705 62.662 Z M 134.705 63.459 "/>
+      <path d="M 143.327 66.107 C 143.327 66.709 143.502 67.201 143.854 67.580 C 144.202 67.963 144.655 68.150 145.209 68.150 C 145.760 68.150 146.202 67.947 146.538 67.541 C 146.870 67.134 147.038 66.650 147.038 66.091 C 147.038 65.533 146.866 65.048 146.530 64.642 C 146.190 64.236 145.745 64.029 145.198 64.029 C 144.651 64.029 144.202 64.228 143.854 64.619 C 143.502 65.009 143.327 65.505 143.327 66.107 M 148.698 66.084 C 148.698 67.091 148.373 67.920 147.729 68.556 C 147.088 69.201 146.245 69.517 145.198 69.517 C 144.155 69.517 143.303 69.201 142.651 68.556 C 141.995 67.920 141.666 67.095 141.666 66.091 C 141.666 65.088 141.991 64.263 142.631 63.623 C 143.276 62.982 144.123 62.662 145.174 62.662 C 146.225 62.662 147.073 62.982 147.721 63.615 C 148.373 64.252 148.698 65.072 148.698 66.084 "/>
+      <path d="M 152.928 63.443 C 153.346 62.923 153.991 62.662 154.862 62.662 C 155.620 62.662 156.213 63.002 156.655 63.673 C 157.084 63.002 157.780 62.662 158.741 62.662 C 160.151 62.662 160.858 63.541 160.858 65.302 L 160.858 69.521 L 159.233 69.521 L 159.233 65.920 C 159.233 64.552 158.842 63.869 158.061 63.869 C 157.284 63.869 156.893 64.627 156.893 66.150 L 156.893 69.521 L 155.248 69.521 L 155.248 66.048 C 155.248 64.595 154.905 63.869 154.217 63.869 C 153.358 63.869 152.928 64.627 152.928 66.150 L 152.928 69.521 L 151.288 69.521 L 151.288 62.662 L 152.928 62.662 Z M 152.928 63.443 "/>
+      <path d="M 163.143 62.662 L 165.041 62.662 L 166.788 66.521 L 168.616 62.662 L 170.479 62.662 L 165.737 71.783 L 163.905 71.783 L 165.971 68.103 Z M 163.143 62.662 "/>
+      <path d="M 113.788 68.720 C 113.327 69.252 112.643 69.521 111.741 69.521 C 110.205 69.521 109.436 68.611 109.436 66.798 L 109.436 62.662 L 111.061 62.662 L 111.061 66.279 C 111.061 67.634 111.495 68.314 112.366 68.314 C 113.315 68.314 113.788 67.588 113.788 66.130 L 113.788 62.662 L 115.432 62.662 L 115.432 69.521 L 113.788 69.521 Z M 113.788 68.720 "/>
+    </symbol>
+  </svg>
   <nav>
-    <div class="nav-inner">
-      <a href="#" class="nav-brand">
-        <svg viewBox="0 0 120 40" width="120" height="40" fill="none" style="overflow:visible;display:block;">
-          <g transform="translate(20,20)">
-            <path d="M 12.8 -9.6 A 16 16 0 1 0 14.0 -5.4" stroke="#f0f0f0" stroke-width="0.9" fill="none" stroke-linecap="round"/>
-            <circle cx="14.0" cy="-5.4" r="1.8" fill="#D99548"/>
-          </g>
-          <text x="50" y="26" font-family="'Inter', system-ui, sans-serif" font-weight="200" font-size="26" letter-spacing="4" fill="#f0f0f0">sai</text>
-        </svg>
+    <div class="wrap nav-inner">
+      <a href="#" class="brand" aria-label="Sai autonomy">
+        <svg viewBox="0 0 172 101.6" fill="currentColor" role="img" aria-label="Sai autonomy"><use href="#sai-lockup"/></svg>
       </a>
       <div class="nav-links">
-        <a href="#what">Product</a>
+        <a href="#moment">Product</a>
         <a href="#demo">Demo</a>
-        <a href="#access" class="nav-cta">Contact</a>
+        <a href="#contact" class="nav-cta">Contact</a>
       </div>
     </div>
+    <div class="rule"></div>
   </nav>
-
-  <div class="page">
-
-    <!-- HERO -->
+  <main>
     <section class="hero">
-      <svg class="hero-lens" viewBox="0 0 520 520" fill="none">
-        <path d="M 410 135 A 200 200 0 1 0 425 175" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <circle class="amber" cx="425" cy="175" r="4" fill="#D99548"/>
-      </svg>
-
-      <div class="hero-eyebrow">Sai <span style="color:var(--sai-node);font-family:var(--font-kana);font-weight:300;letter-spacing:0;">際</span> — Decision layer for autonomous flight</div>
-      <h1 class="hero-h1">We design the moments that matter<span class="hero-kana">際</span></h1>
-      <p class="hero-lede">
-        Sai gives commercial drones a decision layer on board.<br>
-        It makes the calls the mission plan can't anticipate. It keeps a record of each one.
-      </p>
-      <div class="hero-actions">
-        <a href="#access" class="btn-primary">Get in touch</a>
-        <a href="demo.html" class="btn-text">See the demo →</a>
-      </div>
-    </section>
-
-    <!-- STATS -->
-    <div class="stats reveal">
-      <div class="stat">
-        <div class="stat-v">PX4 · MAVLink</div>
-        <div class="stat-l">Flight stack</div>
-      </div>
-      <div class="stat">
-        <div class="stat-v">0</div>
-        <div class="stat-l">Hardware to replace</div>
-      </div>
-      <div class="stat">
-        <div class="stat-v stat-cycle" id="scenarioCycle">
-          <span class="cycle-active">Close approach</span>
+      <div class="wrap hero-grid">
+        <div>
+          <svg class="mark" viewBox="-1 -1 85.3 103.6" aria-hidden="true">
+            <defs>
+              <mask id="mk" maskUnits="userSpaceOnUse" x="-2" y="-2" width="90" height="108">
+                <rect x="-2" y="-2" width="90" height="108" fill="#000"/>
+                <g fill="none" stroke="#fff" stroke-width="7.5" stroke-linejoin="miter" stroke-miterlimit="12">
+                  <path class="s a1" pathLength="1" d="M2.2 -1.5V103.5"/>
+                  <path class="s a2" pathLength="1" d="M12.1 -1.5V66.8"/>
+                  <path class="s b1" pathLength="1" d="M25.2 44 L40.95 2.28 H65.9 L81.6 44"/>
+                  <path class="s b2" pathLength="1" d="M37.6 44 L53.43 5.4 L69.3 44"/>
+                  <path class="s b3" pathLength="1" d="M22 52.95H85"/>
+                  <path class="s b4" pathLength="1" d="M22 62.8H85"/>
+                  <path class="s c1" pathLength="1" d="M25.8 74.5V92"/>
+                  <path class="s c2" pathLength="1" d="M81.1 74.5V92"/>
+                  <path class="s c3" pathLength="1" d="M53.43 63.5V103.5"/>
+                </g>
+              </mask>
+            </defs>
+            <g fill="currentColor" mask="url(#mk)">
+      <path d="M0.05 101.56H4.42V0.04H0.05Z"/>
+      <path d="M9.9 65.05H14.27V0.04H9.9Z"/>
+      <path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/>
+      <path d="M23.6 55.13H83.27V50.76H23.6Z"/>
+      <path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/>
+      <path d="M23.6 90.39H27.97V76.13H23.6Z"/>
+      <path d="M78.9 90.39H83.27V76.13H78.9Z"/>
+            </g>
+          </svg>
+          <h1 class="h1"><span class="w">We</span> <span class="w">design</span> <span class="w">the</span> <span class="w">moments</span> <span class="w">that</span> <span class="w">matter</span></h1>
+          <p class="lede">Sai gives commercial drones a decision layer on board. <b>It makes the calls the mission plan can't anticipate.</b> It keeps a record of each one.</p>
+          <div class="actions">
+            <a href="#contact" class="btn">Get in touch</a>
+            <a href="#demo" class="link">See the demo →</a>
+          </div>
         </div>
-        <div class="stat-l">Scenarios demonstrated</div>
-      </div>
-    </div>
-
-    <!-- SPLIT STATEMENT -->
-    <div class="split reveal" id="what">
-      <div>
-        <div class="split-tag">Philosophy</div>
-        <h2 class="split-h">PX4 flies. Sai decides.</h2>
-      </div>
-      <div class="split-body">
-        Sai is a decision layer, not a flight controller. Your autopilot keeps doing what it does well.
-        Sai watches the world around the mission, names the decisive instant when something changes,
-        and acts in milliseconds, or hands it back to you if that's what the moment calls for.
-      </div>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="features">
-      <div class="feature reveal reveal-d1">
-        <div class="feature-n">01</div>
-        <h3 class="feature-h">Decides on board</h3>
-        <div class="feature-b">The call is made on the aircraft, in the second it's needed.</div>
-      </div>
-      <div class="feature reveal reveal-d2">
-        <div class="feature-n">02</div>
-        <h3 class="feature-h">Leaves a record</h3>
-        <div class="feature-b">Every decision is written down as it happens. What the aircraft saw, what it chose, and why. Read it after the flight, or hand it to whoever needs to trust the decision.</div>
-      </div>
-      <div class="feature reveal reveal-d3">
-        <div class="feature-n">03</div>
-        <h3 class="feature-h">Fits what you already fly</h3>
-        <div class="feature-b">It rides on a small companion computer beside the flight controller. It talks over the same link a ground station uses. Nothing to replace, nothing to relearn.</div>
-      </div>
-    </div>
-
-    <!-- QUOTE -->
-    <div class="quote reveal">
-      <div class="quote-text">One decision, at the <span style="color:var(--sai-node)">right instant</span>, changes everything.</div>
-    </div>
-
-    <!-- DEMO -->
-    <section class="demo-section reveal" id="demo">
-      <div class="demo-tag">Concept simulation</div>
-      <h2 class="demo-h">Run a mission yourself</h2>
-      <p class="demo-body">
-        Configure a scenario, set the autonomy threshold, and watch the decision layer
-        handle routine events and escalate to you only when judgment is needed.
-      </p>
-      <a href="demo.html" class="btn-outline">Launch scenario simulation →</a>
-    </section>
-
-    <!-- CTA BAND -->
-    <div class="cta-band reveal" id="access">
-      <div class="cta-kana">際</div>
-      <h2 class="cta-h">Talk to us</h2>
-      <div class="cta-sub">If you fly inspection missions, we'd like to hear about the moments the plan didn't cover.</div>
-
-      <div class="form-wrap">
-        <form id="earlyAccessForm" action="/api/early-access" method="POST" novalidate>
-
-          <div class="field">
-            <label for="email">Email <span class="req">*</span></label>
-            <input type="email" id="email" name="email" placeholder="you@company.com" required />
-          </div>
-
-          <div class="hp" aria-hidden="true">
-            <label for="company_website">Company website</label>
-            <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" />
-          </div>
-
-          <div class="field">
-            <label for="organization">
-              Organization
-              <span class="opt">optional</span>
-            </label>
-            <input type="text" id="organization" name="organization" placeholder="Who you fly for" maxlength="200" />
-          </div>
-
-          <div class="field">
-            <label for="message">Message <span class="req">*</span></label>
-            <textarea id="message" name="message" placeholder="What do you fly, and what would you want this to handle?" maxlength="2000" required></textarea>
-          </div>
-
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5Tz_aL7C6JYtdb" data-theme="dark" data-size="flexible"></div>
-
-          <button type="submit" class="submit-btn" id="submitBtn">Send message</button>
-          <p class="form-error" id="formError" role="alert" hidden></p>
-          <p class="form-note">We read every message and reply.</p>
-        </form>
-
-        <div class="form-success" id="formSuccess">
-          <div class="success-glyph">際</div>
-          <div class="success-title">Message received</div>
-          <div class="success-sub">We'll be in touch.</div>
+        <div class="ledger" aria-hidden="true">
+          <div class="row"><span class="mono">01</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">02</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">03</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">04</span><div class="rule"></div></div>
+          <div class="row live"><span class="mono">05</span><div class="rule"></div></div>
         </div>
       </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="footer-brand">
-        <svg viewBox="0 0 240 240" width="20" height="20" fill="none">
-          <path d="M 193.06 75.78 A 88 88 0 1 0 200.11 100.05" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
-          <circle cx="200.11" cy="100.05" r="3.5" fill="#D99548"/>
+    </section>
+    <section class="moment" id="moment">
+      <div class="stage wrap">
+        <div class="beats">
+          <div class="beat beat-1">
+            <div class="mono"><span>01</span><span class="cjk">兩個場域</span><span>Two domains</span></div>
+            <h2>The plan, and the world the aircraft is in.</h2>
+            <p>A mission is drawn before takeoff. The site, the wind and the structure are what the aircraft meets once it is up.</p>
+          </div>
+          <div class="beat beat-2">
+            <div class="mono"><span>02</span><span class="cjk">一條界線</span><span>One line between them</span></div>
+            <h2>Sai sits on that line.</h2>
+            <p>際 is the word for it. The edge where two things meet. Every job has one, whether or not anyone drew it.</p>
+          </div>
+          <div class="beat beat-3">
+            <div class="mono"><span>03</span><span class="cjk">一個瞬間</span><span>One instant</span></div>
+            <h2>The call is made there, in that second.</h2>
+            <p>When the world crosses the plan, the aircraft decides on board and writes down what it did.</p>
+            <div class="record" aria-label="Example record entry">
+              <span class="k">entry</span><span class="v">07</span>
+              <span class="k">decision</span><span class="v"><em>hold</em></span>
+              <span class="k">reason</span><span class="v">closer to the structure than the job allows</span>
+            </div>
+          </div>
+        </div>
+        <svg class="scene" viewBox="0 0 600 400" fill="none" stroke-width="1.5" stroke-linecap="butt" aria-hidden="true">
+          <g class="world">
+            <path class="draw p1" pathLength="1" d="M420 330 V100 H560" />
+            <path class="draw p2" pathLength="1" d="M440 130 H545 M440 160 H545 M440 190 H545 M440 220 H545 M440 250 H545 M440 280 H545 M440 310 H545" stroke-width="1" />
+            <path class="draw p3" pathLength="1" d="M300 40 l24 -10 M330 46 l24 -10 M360 52 l24 -10 M320 64 l24 -10 M350 70 l24 -10" stroke-width="1" />
+          </g>
+          <g class="plan">
+            <path class="draw p1" pathLength="1" d="M60 300 L200 150 L330 150 L470 250" stroke-dasharray="1" />
+            <path class="draw p2" pathLength="1" d="M56 296h8v8h-8z M196 146h8v8h-8z M326 146h8v8h-8z M466 246h8v8h-8z" />
+          </g>
+          <path class="bound draw b1" pathLength="1" d="M380 60 H600 M380 60 V370 H600" stroke-width="2" />
+          <path class="plan ghost" d="M380 185.7 L470 250" stroke-dasharray="3 5" />
+          <circle class="craft" r="5" />
+          <g class="hold" transform="translate(380 185.7)">
+            <circle r="14" stroke="currentColor" stroke-width="1" />
+            <circle r="24" stroke="currentColor" stroke-width="0.75" opacity="0.5" />
+          </g>
         </svg>
-        <span class="footer-text">Sai Autonomy</span>
       </div>
-      <div class="footer-kana">際</div>
-      <div class="footer-copy">&copy; 2026</div>
-    </footer>
-
-  </div>
-
-  <script>
-    /* Scroll reveal */
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.15 });
-
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    /* Hero lens fade-in */
-    requestAnimationFrame(() => {
-      const lens = document.querySelector('.hero-lens');
-      if (lens) lens.classList.add('visible');
-    });
-
-    /* Scenario cycling */
-    const scenarios = ['Close approach', 'Link loss', 'Low battery', 'Containment'];
-    let idx = 0;
-    const cycleEl = document.getElementById('scenarioCycle');
-
-    setInterval(() => {
-      const current = cycleEl.querySelector('.cycle-active');
-      current.classList.remove('cycle-active');
-      current.classList.add('cycle-out');
-
-      const next = document.createElement('span');
-      idx = (idx + 1) % scenarios.length;
-      next.textContent = scenarios[idx];
-      next.classList.add('cycle-in');
-      cycleEl.appendChild(next);
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          next.classList.remove('cycle-in');
-          next.classList.add('cycle-active');
-        });
-      });
-
-      setTimeout(() => current.remove(), 500);
-    }, 2400);
-
-    /* Form submit */
-    const form    = document.getElementById('earlyAccessForm');
-    const btn     = document.getElementById('submitBtn');
-    const success = document.getElementById('formSuccess');
-    const errorEl = document.getElementById('formError');
-
-    const showError = (msg) => { errorEl.textContent = msg; errorEl.hidden = false; };
-    const resetBtn  = () => {
-      btn.disabled = false;
-      btn.textContent = 'Send message';
-      if (window.turnstile) window.turnstile.reset();
-    };
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorEl.hidden = true;
-      if (!form.email.value.trim() || !form.message.value.trim()) {
-        showError('Please fill in the required fields.');
-        return;
-      }
-      const data = new FormData(form);
-      if (!data.get('cf-turnstile-response')) {
-        showError('Please complete the verification.');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Sending\u2026';
-
-      try {
-        const res  = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-        const body = await res.json().catch(() => ({}));
-        if (res.ok && body.ok) {
-          form.style.display = 'none';
-          success.classList.add('show');
-          return;
-        }
-        showError(body.error === 'turnstile_failed'
-          ? 'Verification failed. Please try again.'
-          : 'Something went wrong. Please try again in a moment.');
-      } catch {
-        showError('Network error. Please try again.');
-      }
-      resetBtn();
-    });
-  </script>
-
+    </section>
+    <section class="wrap" id="demo" style="padding: 10vh 0 0;">
+      <div class="mono">Concept simulation</div>
+      <p style="margin-top:12px; max-width:52ch; color:var(--ink-2);">[Comp ends here. The demo, the three statements and the contact form follow the same system in the full build.]</p>
+    </section>
+  </main>
+  <footer id="contact">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <svg viewBox="0 0 172 101.6" fill="currentColor" role="img" aria-label="Sai autonomy"><use href="#sai-lockup"/></svg>
+          <p>An onboard decision layer for commercial drones.</p>
+        </div>
+        <div class="foot-col">
+          <h4>Product</h4>
+          <a href="#moment">Overview</a>
+          <a href="#demo">Demo</a>
+        </div>
+        <div class="foot-col">
+          <h4>Company</h4>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Sai Autonomy</span>
+        <button class="theme-toggle" type="button" onclick="(function(){var r=document.documentElement;var cur=r.getAttribute('data-theme');var sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var now=cur||sys;r.setAttribute('data-theme', now==='dark'?'light':'dark');})()">Toggle light / dark (comp only)</button>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
