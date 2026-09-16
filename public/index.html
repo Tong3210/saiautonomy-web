@@ -74,6 +74,8 @@
       text-rendering: optimizeLegibility;
     }
     a { color: inherit; text-decoration: none; }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
     .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
     .mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.01em; color: var(--ink-2); }
     .cjk { font-family: var(--cjk); letter-spacing: 0.16em; }
@@ -134,7 +136,7 @@
     .moment .stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: center; }
     .beats { position: relative; min-height: 220px; }
     .beat { position: absolute; inset: 0; opacity: 0; animation: beat1 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .beat .mono { display: flex; gap: 14px; align-items: baseline; margin-bottom: 18px; }
+    .beat .mono { display: flex; gap: 14px; align-items: baseline; margin-bottom: 18px; white-space: nowrap; }
     .beat h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; max-width: 14ch; }
     .beat p { margin-top: 16px; color: var(--ink-2); max-width: 40ch; font-size: clamp(16px, 1.25vw, 19px); }
     .beat-2 { animation-name: beat2; }
@@ -154,7 +156,8 @@
     .scene .ghost { animation: ghost 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
     .record { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 12px 18px; align-items: baseline; opacity: 0; animation: record 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
     .record .k { font-family: var(--mono); font-size: 12px; color: var(--ink-2); letter-spacing: 0.04em; }
-    .record .v { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+    .record .v { font-family: var(--mono); font-size: 13px; color: var(--ink); text-wrap: pretty; }
+    .record .k { white-space: nowrap; }
     .record .v em { font-style: normal; color: var(--accent); }
 
     /* ---------- footer ---------- */
@@ -163,7 +166,7 @@
     .foot-links { display: flex; gap: 28px; padding-top: 6px; }
     .foot-brand .brand { color: var(--accent); }
     .foot-brand .m { height: 28px; } .foot-brand .wm { height: 14px; }
-    .foot-brand p { margin-top: 14px; max-width: 30ch; }
+    .foot-brand p { margin-top: 14px; max-width: 34ch; }
     .foot-links a { transition: color var(--t-quick) var(--ease); }
     .foot-links a:hover { color: var(--ink); }
     .foot-bottom { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; }
