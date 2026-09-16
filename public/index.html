@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sai — We design the moments that matter</title>
-  <meta name="description" content="The decision layer for autonomous drones. Sai gives commercial drones autonomous decision-making without replacing your hardware." />
+  <meta name="description" content="An onboard decision layer for commercial drones. Sai makes the in-flight calls the mission plan can't anticipate, and keeps a record of each one." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='12' fill='%23111417'/%3E%3Cpath d='M 51.5 20.2 A 23 23 0 1 0 53.4 26.7' stroke='%23E8EAF0' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='53.4' cy='26.7' r='2.5' fill='%23D99548'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -503,6 +503,7 @@
     }
 
     input[type="email"],
+    input[type="text"],
     select,
     textarea {
       background: var(--ed-surface);
@@ -519,6 +520,7 @@
     }
 
     input[type="email"]:focus,
+    input[type="text"]:focus,
     select:focus,
     textarea:focus {
       outline: none;
@@ -699,7 +701,7 @@
       <div class="nav-links">
         <a href="#what">Product</a>
         <a href="#demo">Demo</a>
-        <a href="#access" class="nav-cta">Early access</a>
+        <a href="#access" class="nav-cta">Contact</a>
       </div>
     </div>
   </nav>
@@ -716,11 +718,11 @@
       <div class="hero-eyebrow">Sai <span style="color:var(--sai-node);font-family:var(--font-kana);font-weight:300;letter-spacing:0;">際</span> — Decision layer for autonomous flight</div>
       <h1 class="hero-h1">We design the moments that matter<span class="hero-kana">際</span></h1>
       <p class="hero-lede">
-        Sai gives commercial drones autonomous decision-making.<br>
-        No hardware replacement. No continuous oversight.
+        Sai gives commercial drones a decision layer on board.<br>
+        It makes the calls the mission plan can't anticipate. It keeps a record of each one.
       </p>
       <div class="hero-actions">
-        <a href="#access" class="btn-primary">Request early access</a>
+        <a href="#access" class="btn-primary">Get in touch</a>
         <a href="demo.html" class="btn-text">See the demo →</a>
       </div>
     </section>
@@ -728,8 +730,8 @@
     <!-- STATS -->
     <div class="stats reveal">
       <div class="stat">
-        <div class="stat-v">MAVLink</div>
-        <div class="stat-l">Protocol</div>
+        <div class="stat-v">PX4 · MAVLink</div>
+        <div class="stat-l">Flight stack</div>
       </div>
       <div class="stat">
         <div class="stat-v">0</div>
@@ -737,9 +739,9 @@
       </div>
       <div class="stat">
         <div class="stat-v stat-cycle" id="scenarioCycle">
-          <span class="cycle-active">Construction</span>
+          <span class="cycle-active">Close approach</span>
         </div>
-        <div class="stat-l">Scenarios</div>
+        <div class="stat-l">Scenarios demonstrated</div>
       </div>
     </div>
 
@@ -760,18 +762,18 @@
     <div class="features">
       <div class="feature reveal reveal-d1">
         <div class="feature-n">01</div>
-        <h3 class="feature-h">Verifiable decisions</h3>
-        <div class="feature-b">Every decision point is traceable. Named, logged, replayable. Not a black box.</div>
+        <h3 class="feature-h">Decides on board</h3>
+        <div class="feature-b">The call is made on the aircraft, in the second it's needed.</div>
       </div>
       <div class="feature reveal reveal-d2">
         <div class="feature-n">02</div>
-        <h3 class="feature-h">Drop-in integration</h3>
-        <div class="feature-b">Nothing to replace, nothing to relearn. Mounts to the airframe, talks over MAVLink.</div>
+        <h3 class="feature-h">Leaves a record</h3>
+        <div class="feature-b">Every decision is written down as it happens. What the aircraft saw, what it chose, and why. Read it after the flight, or hand it to whoever needs to trust the decision.</div>
       </div>
       <div class="feature reveal reveal-d3">
         <div class="feature-n">03</div>
-        <h3 class="feature-h">Mission-composable</h3>
-        <div class="feature-b">Construction inspection, infrastructure monitoring, search and rescue. Mission logic is composable and built to your scenario.</div>
+        <h3 class="feature-h">Fits what you already fly</h3>
+        <div class="feature-b">It rides on a small companion computer beside the flight controller. It talks over the same link a ground station uses. Nothing to replace, nothing to relearn.</div>
       </div>
     </div>
 
@@ -782,11 +784,11 @@
 
     <!-- DEMO -->
     <section class="demo-section reveal" id="demo">
-      <div class="demo-tag">See it in action</div>
+      <div class="demo-tag">Concept simulation</div>
       <h2 class="demo-h">Run a mission yourself</h2>
       <p class="demo-body">
         Configure a scenario, set the autonomy threshold, and watch the decision layer
-        handle routine events — escalating to you only when judgment is needed.
+        handle routine events and escalate to you only when judgment is needed.
       </p>
       <a href="demo.html" class="btn-outline">Launch scenario simulation →</a>
     </section>
@@ -794,8 +796,8 @@
     <!-- CTA BAND -->
     <div class="cta-band reveal" id="access">
       <div class="cta-kana">際</div>
-      <h2 class="cta-h">Join the pilots</h2>
-      <div class="cta-sub">Early access for integrators shipping real missions.<br>We're selecting a small first cohort.</div>
+      <h2 class="cta-h">Talk to us</h2>
+      <div class="cta-sub">If you fly inspection missions, we'd like to hear about the moments the plan didn't cover.</div>
 
       <div class="form-wrap">
         <form id="earlyAccessForm" action="/api/early-access" method="POST" novalidate>
@@ -811,69 +813,28 @@
           </div>
 
           <div class="field">
-            <label for="role">Your role <span class="req">*</span></label>
-            <div class="select-wrap">
-              <select id="role" name="role" required>
-                <option value="" disabled selected>Select your role</option>
-                <option value="site_manager">Site Manager</option>
-                <option value="drone_operator">Drone Operator</option>
-                <option value="systems_integrator">Systems Integrator</option>
-                <option value="researcher">Researcher</option>
-                <option value="investor">Investor</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="platform">Drone platform <span class="req">*</span></label>
-            <div class="select-wrap">
-              <select id="platform" name="platform" required>
-                <option value="" disabled selected>Select platform</option>
-                <option value="px4">PX4-based</option>
-                <option value="ardupilot">ArduPilot</option>
-                <option value="dji">DJI</option>
-                <option value="none">None yet</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="pain">
-              What's your biggest operational pain point?
+            <label for="organization">
+              Organization
               <span class="opt">optional</span>
             </label>
-            <textarea id="pain" name="pain_point" placeholder="Describe your current challenges..."></textarea>
+            <input type="text" id="organization" name="organization" placeholder="Who you fly for" maxlength="200" />
           </div>
 
           <div class="field">
-            <label for="scenario">
-              Scenario you're most interested in
-              <span class="opt">optional</span>
-            </label>
-            <div class="select-wrap">
-              <select id="scenario" name="scenario">
-                <option value="" disabled selected>Select a scenario</option>
-                <option value="construction">Construction site inspection</option>
-                <option value="power">Power line inspection</option>
-                <option value="agriculture">Agriculture</option>
-                <option value="sar">Search &amp; Rescue</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+            <label for="message">Message <span class="req">*</span></label>
+            <textarea id="message" name="message" placeholder="What do you fly, and what would you want this to handle?" maxlength="2000" required></textarea>
           </div>
 
           <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5Tz_aL7C6JYtdb" data-theme="dark" data-size="flexible"></div>
 
-          <button type="submit" class="submit-btn" id="submitBtn">Request early access</button>
+          <button type="submit" class="submit-btn" id="submitBtn">Send message</button>
           <p class="form-error" id="formError" role="alert" hidden></p>
-          <p class="form-note">No spam. We'll reach out personally.</p>
+          <p class="form-note">We read every message and reply.</p>
         </form>
 
         <div class="form-success" id="formSuccess">
           <div class="success-glyph">際</div>
-          <div class="success-title">You're on the list</div>
+          <div class="success-title">Message received</div>
           <div class="success-sub">We'll be in touch.</div>
         </div>
       </div>
@@ -914,7 +875,7 @@
     });
 
     /* Scenario cycling */
-    const scenarios = ['Construction', 'Infrastructure', 'Power line', 'Agriculture', 'Search & Rescue'];
+    const scenarios = ['Close approach', 'Link loss', 'Low battery', 'Containment'];
     let idx = 0;
     const cycleEl = document.getElementById('scenarioCycle');
 
@@ -948,14 +909,14 @@
     const showError = (msg) => { errorEl.textContent = msg; errorEl.hidden = false; };
     const resetBtn  = () => {
       btn.disabled = false;
-      btn.textContent = 'Request early access';
+      btn.textContent = 'Send message';
       if (window.turnstile) window.turnstile.reset();
     };
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorEl.hidden = true;
-      if (!form.email.value.trim() || !form.role.value || !form.platform.value) {
+      if (!form.email.value.trim() || !form.message.value.trim()) {
         showError('Please fill in the required fields.');
         return;
       }
