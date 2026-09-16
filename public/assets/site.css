@@ -150,10 +150,11 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 
 /* contact */
 .contact { padding: clamp(64px, 12vh, 140px) 0 0; }
-.contact .head { max-width: 46ch; }
+.contact .inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: start; }
+.contact .head { max-width: 40ch; }
 .contact h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; }
 .contact .sub { margin-top: 14px; color: var(--ink-2); font-size: clamp(16px, 1.25vw, 19px); }
-.form-wrap { max-width: 520px; margin-top: 36px; }
+.form-wrap { max-width: 560px; margin-top: 6px; justify-self: end; width: 100%; }
 form { display: flex; flex-direction: column; gap: 20px; }
 .field { display: flex; flex-direction: column; gap: 8px; }
 label { font-size: 13px; color: var(--ink-2); }
@@ -279,6 +280,8 @@ footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40
   .scene .dim1 { opacity: 0; animation: none; }
   .scene .g-hold { transform: none; }
   .what .grid { grid-template-columns: 1fr; }
+  .contact .inner { grid-template-columns: 1fr; }
+  .form-wrap { margin-top: 28px; justify-self: start; }
   .what .item { animation: none; opacity: 1; }
   .foot-links { flex-wrap: wrap; gap: 16px 24px; }
   .nav-links { gap: 18px; }
