@@ -75,8 +75,8 @@
     }
     a { color: inherit; text-decoration: none; }
     .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
-    .mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-2); }
-    .cjk { font-family: var(--cjk); text-transform: none; letter-spacing: 0.18em; }
+    .mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.01em; color: var(--ink-2); }
+    .cjk { font-family: var(--cjk); letter-spacing: 0.16em; }
     .rule { height: 1px; background: var(--line); transform-origin: left; }
 
     /* ---------- nav ---------- */
@@ -159,13 +159,13 @@
 
     /* ---------- footer ---------- */
     footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
-    .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+    .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
+    .foot-links { display: flex; gap: 28px; padding-top: 6px; }
     .foot-brand .brand { color: var(--accent); }
     .foot-brand .m { height: 28px; } .foot-brand .wm { height: 14px; }
     .foot-brand p { margin-top: 14px; max-width: 30ch; }
-    .foot-col h4 { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
-    .foot-col a { display: block; margin-bottom: 8px; transition: color var(--t-quick) var(--ease); }
-    .foot-col a:hover { color: var(--ink); }
+    .foot-links a { transition: color var(--t-quick) var(--ease); }
+    .foot-links a:hover { color: var(--ink); }
     .foot-bottom { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; }
     .theme-toggle { background: none; border: 1px solid var(--line-2); color: var(--ink-2); font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 2px; cursor: pointer; }
 
@@ -229,7 +229,7 @@
       .scene .craft { offset-distance: 100%; animation: none; opacity: 1; }
       .scene .hold, .scene .ghost { opacity: 1; animation: none; transform: none; }
       .record { opacity: 1; animation: none; }
-      .foot-grid { grid-template-columns: 1fr 1fr; }
+      .foot-links { flex-wrap: wrap; gap: 16px 24px; }
       .nav-links { gap: 18px; }
       .nav-links a:not(.nav-cta) { display: none; }
     }
@@ -382,17 +382,10 @@
           </div>
           <p>An onboard decision layer for commercial drones.</p>
         </div>
-        <div class="foot-col">
-          <h4>Product</h4>
+        <div class="foot-links">
           <a href="#moment">Overview</a>
           <a href="#demo">Demo</a>
-        </div>
-        <div class="foot-col">
-          <h4>Company</h4>
           <a href="#contact">Contact</a>
-        </div>
-        <div class="foot-col">
-          <h4>Legal</h4>
           <a href="#">Privacy</a>
         </div>
       </div>
