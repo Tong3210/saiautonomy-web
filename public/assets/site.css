@@ -98,7 +98,8 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 .ledger .row.live .mono { color: var(--accent); }
 .ledger .row.live .rule { background: var(--accent); }
 .ledger .row.live .name { color: var(--accent); }
-.ledger .typing { display: inline-block; vertical-align: bottom; white-space: nowrap; overflow: hidden; max-width: 0; border-right: 1px solid var(--accent); padding-right: 2px; animation: type 2.4s steps(30, end) 3.2s forwards, caret 1s steps(1, end) 3.2s infinite; }
+.ledger .typing { display: inline-block; vertical-align: bottom; white-space: nowrap; overflow: hidden; max-width: 0; border-right: 1px solid transparent; padding-right: 2px; animation: type 2.4s steps(30, end) 3.2s forwards, caret 1s steps(1, end) 3.2s 6 forwards; }
+.ledger .name { will-change: transform; }
 
 /* the moment */
 .moment { view-timeline-name: --moment; view-timeline-axis: block; height: 320vh; position: relative; }
