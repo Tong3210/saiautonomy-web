@@ -85,6 +85,8 @@
     .brand { display: flex; align-items: center; gap: 12px; color: var(--accent); }
     .brand { gap: 10px; }
     .brand .m { height: 34px; width: auto; display: block; }
+    .brand .wm { display: flex; flex-direction: column; justify-content: center; font-size: 12.5px; line-height: 1.2; letter-spacing: 0.1em; font-weight: 500; color: var(--accent); padding-top: 1px; }
+    .brand .wm span { display: block; }
     .nav-links { display: flex; gap: 28px; align-items: center; font-size: 14px; color: var(--ink-2); }
     .nav-links a { transition: color var(--t-quick) var(--ease); }
     .nav-links a:hover { color: var(--ink); }
@@ -163,6 +165,7 @@
     .foot-links { display: flex; gap: 28px; padding-top: 6px; }
     .foot-brand .brand { color: var(--accent); }
     .foot-brand .m { height: 30px; }
+    .foot-brand .wm { font-size: 11.5px; }
     .foot-brand p { margin-top: 14px; max-width: 34ch; }
     .foot-links a { transition: color var(--t-quick) var(--ease); }
     .foot-links a:hover { color: var(--ink); }
@@ -250,7 +253,8 @@
   <nav>
     <div class="wrap nav-inner">
       <a href="#" class="brand" aria-label="Sai autonomy">
-        <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" role="img" aria-label="Sai autonomy"><use href="#sai-mark"/></svg>
+        <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" aria-hidden="true"><use href="#sai-mark"/></svg>
+        <span class="wm" aria-hidden="true"><span>Sai</span><span>autonomy</span></span>
       </a>
       <div class="nav-links">
         <a href="#moment">Product</a>
@@ -363,7 +367,8 @@
       <div class="foot-grid">
         <div class="foot-brand">
           <div class="brand">
-            <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" role="img" aria-label="Sai autonomy"><use href="#sai-mark"/></svg>
+            <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" aria-hidden="true"><use href="#sai-mark"/></svg>
+            <span class="wm" aria-hidden="true"><span>Sai</span><span>autonomy</span></span>
           </div>
           <p>An onboard decision layer for commercial drones.</p>
         </div>
