@@ -221,7 +221,7 @@ footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40
 @keyframes s-limit { 0%, 38% { stroke-dashoffset: 1; } 56%, 100% { stroke-dashoffset: 0; } }
 @keyframes s-limitlabel { 0%, 52% { opacity: 0; } 58%, 100% { opacity: 1; } }
 @keyframes s-craft { 0%, 60% { opacity: 0; transform: translateX(0); } 62% { opacity: 1; transform: translateX(0); } 78%, 100% { opacity: 1; transform: translateX(var(--travel)); } }
-@keyframes s-dim1 { 0%, 79% { opacity: 1; } 84%, 100% { opacity: 0; } }
+@keyframes s-dim1 { 0%, 68% { opacity: 0; } 70%, 79% { opacity: 1; } 84%, 100% { opacity: 0; } }
 @keyframes s-dim2 { 0%, 79% { opacity: 0; } 84%, 100% { opacity: 1; } }
 @keyframes s-hold { 0%, 78% { opacity: 0; transform: scale(0.4); } 84% { opacity: 1; transform: scale(1.12); } 90%, 100% { opacity: 1; transform: scale(1); } }
 @keyframes s-ghost { 0%, 78% { opacity: 0; } 86%, 100% { opacity: 0.55; } }
