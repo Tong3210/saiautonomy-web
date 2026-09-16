@@ -17,7 +17,7 @@
   --t-quick: 160ms;
   --t-std: 420ms;
   --t-slow: 700ms;
-  --gutter: clamp(16px, 5vw, 72px);
+  --gutter: clamp(20px, 5vw, 72px);
   --max: 1280px;
 }
 @media (prefers-color-scheme: dark) {
@@ -262,7 +262,7 @@ footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40
   .scene .g-craft { transform: translateX(var(--travel)); }
   .scene .dim1 { opacity: 0; }
   .moment { height: auto; }
-  .moment .stage { position: static; height: auto; padding: 80px 0; }
+  .moment .stage { position: static; height: auto; padding: 80px var(--gutter); }
   .beats { min-height: 0; display: grid; gap: 40px; }
   .beat { position: static; }
 }
@@ -270,7 +270,7 @@ footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40
   .hero-grid, .moment .stage { grid-template-columns: 1fr; }
   .ledger { display: none; }
   .moment { height: auto; }
-  .moment .stage { position: static; height: auto; padding: 64px 0; gap: 40px; }
+  .moment .stage { position: static; height: auto; padding: 64px var(--gutter); gap: 40px; }
   .beats { min-height: 0; display: grid; gap: 40px; }
   .beat { position: static; opacity: 1; animation: none; transform: none; }
   .record { opacity: 1; animation: none; }
