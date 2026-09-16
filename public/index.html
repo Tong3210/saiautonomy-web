@@ -118,8 +118,11 @@
     .link:hover { color: var(--ink); border-color: var(--ink); }
 
     /* ledger */
-    .ledger { display: grid; gap: 22px; padding-bottom: 6px; }
-    .ledger .row { display: grid; grid-template-columns: 56px 1fr; gap: 16px; align-items: end; }
+    .ledger { display: grid; gap: 18px; padding-bottom: 6px; }
+    .ledger .cap { margin-bottom: 4px; opacity: 0; animation: fade-in var(--t-std) var(--ease) 1.85s both; }
+    .ledger .row { display: grid; grid-template-columns: 40px 1fr; gap: 6px 14px; align-items: baseline; }
+    .ledger .name { font-size: 15px; color: var(--ink); opacity: 0; animation: fade-in var(--t-std) var(--ease) 2.5s both; }
+    .ledger .row .rule { grid-column: 1 / -1; }
     .ledger .rule { animation: rule-in var(--t-slow) var(--ease) both; }
     .ledger .row:nth-child(1) .rule { animation-delay: 1.9s; }
     .ledger .row:nth-child(2) .rule { animation-delay: 2.0s; }
@@ -127,7 +130,7 @@
     .ledger .row:nth-child(4) .rule { animation-delay: 2.2s; }
     .ledger .row:nth-child(5) .rule { animation-delay: 2.3s; }
     .ledger .mono { opacity: 0; animation: fade-in var(--t-std) var(--ease) 2.5s both; }
-    .ledger .row.live .mono { color: var(--accent); }
+    .ledger .row.live .mono, .ledger .row.live .name { color: var(--accent); }
     .ledger .row.live .rule { background: var(--accent); }
 
     /* ---------- the moment (scroll-driven) ---------- */
@@ -141,18 +144,30 @@
     .beat-2 { animation-name: beat2; }
     .beat-3 { animation-name: beat3; }
     .counter { position: absolute; left: 0; bottom: -40px; }
-    .scene { width: 100%; height: auto; display: block; color: var(--ink); }
-    .scene .plan   { stroke: var(--ink-2); }
-    .scene .world  { stroke: var(--ink-2); }
-    .scene .bound  { stroke: var(--accent); }
-    .scene .craft  { fill: var(--accent); }
-    .scene .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-p1 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .scene .p2 { animation-name: draw-p2; }
-    .scene .p3 { animation-name: draw-p3; }
-    .scene .b1 { animation-name: draw-b1; }
-    .scene .craft { offset-path: path('M60 300 L200 150 L330 150 L380 185.7'); offset-rotate: 0deg; animation: travel 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .scene .hold { transform-origin: 0 0; animation: hold 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .scene .ghost { animation: ghost 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
+    .scene { width: 100%; height: auto; display: block; color: var(--ink-2); }
+    .scene .t { font-family: var(--mono); font-size: 11px; fill: var(--ink-2); }
+    .scene .tl { fill: var(--accent); }
+    .scene .g-struct, .scene .g-hatch { color: var(--ink); }
+    .scene .g-limit, .scene .g-craft, .scene .g-dim2, .scene .g-hold { color: var(--accent); }
+    .scene .d { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold, .scene .g-ghost { opacity: 0; }
+    .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold, .scene .g-ghost, .scene .d, .scene .dim1 {
+      animation-duration: 1s; animation-timing-function: linear; animation-fill-mode: both;
+      animation-timeline: --moment; animation-range: contain 0% contain 100%;
+    }
+    .scene .g-grid { animation-name: s-grid; }
+    .scene .d-struct { animation-name: s-struct; }
+    .scene .g-hatch { animation-name: s-hatch; }
+    .scene .d-plan { animation-name: s-plan; }
+    .scene .g-wp { animation-name: s-wp; }
+    .scene .g-sheet { animation-name: s-sheet; }
+    .scene .d-limit { animation-name: s-limit; }
+    .scene .g-limitlabel { animation-name: s-limitlabel; }
+    .scene .g-craft { animation-name: s-craft; }
+    .scene .dim1 { animation-name: s-dim1; }
+    .scene .g-dim2 { animation-name: s-dim2; }
+    .scene .g-hold { transform-origin: 0 0; animation-name: s-hold; }
+    .scene .g-ghost { animation-name: s-ghost; }
     .record { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 12px 18px; align-items: baseline; opacity: 0; animation: record 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
     .record .k { font-family: var(--mono); font-size: 12px; color: var(--ink-2); letter-spacing: 0.04em; }
     .record .v { font-family: var(--mono); font-size: 13px; color: var(--ink); text-wrap: pretty; }
@@ -182,13 +197,19 @@
     @keyframes beat2 { 0%, 34% { opacity: 0; transform: translateY(12px); } 40%, 58% { opacity: 1; transform: none; } 64%, 100% { opacity: 0; transform: translateY(-12px); } }
     @keyframes beat3 { 0%, 62% { opacity: 0; transform: translateY(12px); } 68%, 100% { opacity: 1; transform: none; } }
     @keyframes record { 0%, 78% { opacity: 0; transform: translateY(8px); } 84%, 100% { opacity: 1; transform: none; } }
-    @keyframes draw-p1 { 0%, 4%  { stroke-dashoffset: 1; } 22%, 100% { stroke-dashoffset: 0; } }
-    @keyframes draw-p2 { 0%, 10% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
-    @keyframes draw-p3 { 0%, 16% { stroke-dashoffset: 1; } 32%, 100% { stroke-dashoffset: 0; } }
-    @keyframes draw-b1 { 0%, 38% { stroke-dashoffset: 1; } 56%, 100% { stroke-dashoffset: 0; } }
-    @keyframes travel { 0%, 60% { offset-distance: 0%; opacity: 0; } 62% { opacity: 1; } 78%, 100% { offset-distance: 100%; opacity: 1; } }
-    @keyframes hold { 0%, 78% { opacity: 0; transform: scale(0.4); } 84% { opacity: 1; transform: scale(1.15); } 90%, 100% { opacity: 1; transform: scale(1); } }
-    @keyframes ghost { 0%, 78% { opacity: 0; } 86%, 100% { opacity: 0.55; } }
+    @keyframes s-grid   { 0% { opacity: 0; } 8%, 100% { opacity: 1; } }
+    @keyframes s-struct { 0%, 4% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
+    @keyframes s-hatch  { 0%, 16% { opacity: 0; } 24%, 100% { opacity: 1; } }
+    @keyframes s-plan   { 0%, 10% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
+    @keyframes s-wp     { 0%, 24% { opacity: 0; } 30%, 100% { opacity: 1; } }
+    @keyframes s-sheet  { 0%, 22% { opacity: 0; } 30%, 100% { opacity: 1; } }
+    @keyframes s-limit  { 0%, 38% { stroke-dashoffset: 1; } 56%, 100% { stroke-dashoffset: 0; } }
+    @keyframes s-limitlabel { 0%, 52% { opacity: 0; } 58%, 100% { opacity: 1; } }
+    @keyframes s-craft  { 0%, 60% { opacity: 0; transform: translateX(0); } 62% { opacity: 1; transform: translateX(0); } 78%, 100% { opacity: 1; transform: translateX(var(--travel)); } }
+    @keyframes s-dim1   { 0%, 79% { opacity: 1; } 84%, 100% { opacity: 0; } }
+    @keyframes s-dim2   { 0%, 79% { opacity: 0; } 84%, 100% { opacity: 1; } }
+    @keyframes s-hold   { 0%, 78% { opacity: 0; transform: scale(0.4); } 84% { opacity: 1; transform: scale(1.12); } 90%, 100% { opacity: 1; transform: scale(1); } }
+    @keyframes s-ghost  { 0%, 78% { opacity: 0; } 86%, 100% { opacity: 0.55; } }
 
     /* mark */
     .mark .s { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw var(--t-slow) var(--ease) both; }
@@ -212,9 +233,12 @@
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .mark .s { stroke-dashoffset: 0; }
       .h1 .w, .lede, .actions, .ledger .mono, .beat, .record { opacity: 1; transform: none; }
-      .scene .draw { stroke-dashoffset: 0; }
-      .scene .craft { offset-distance: 100%; }
-      .scene .hold, .scene .ghost { opacity: 1; }
+      .scene .d { stroke-dashoffset: 0; animation: none; }
+      .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold { opacity: 1; animation: none; }
+      .scene .g-ghost { opacity: 0.55; animation: none; }
+      .scene .g-craft { transform: translateX(var(--travel)); }
+      .scene .dim1 { opacity: 0; animation: none; }
+      .scene .g-hold { transform: none; }
       .moment { height: auto; }
       .moment .stage { position: static; height: auto; padding: 80px 0; }
       .beats { min-height: 0; display: grid; gap: 40px; }
@@ -228,9 +252,12 @@
       .beats { min-height: 0; display: grid; gap: 40px; }
       .beat { position: static; opacity: 1; animation: none; transform: none; }
       .counter { display: none; }
-      .scene .draw { stroke-dashoffset: 0; animation: none; }
-      .scene .craft { offset-distance: 100%; animation: none; opacity: 1; }
-      .scene .hold, .scene .ghost { opacity: 1; animation: none; transform: none; }
+      .scene .d { stroke-dashoffset: 0; animation: none; }
+      .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold { opacity: 1; animation: none; }
+      .scene .g-ghost { opacity: 0.55; animation: none; }
+      .scene .g-craft { transform: translateX(var(--travel)); }
+      .scene .dim1 { opacity: 0; animation: none; }
+      .scene .g-hold { transform: none; }
       .record { opacity: 1; animation: none; }
       .foot-links { flex-wrap: wrap; gap: 16px 24px; }
       .nav-links { gap: 18px; }
@@ -296,18 +323,19 @@
             </g>
           </svg>
           <h1 class="h1"><span class="w">We</span> <span class="w">design</span> <span class="w">the</span> <span class="w">moments</span> <span class="w">that</span> <span class="w">matter</span></h1>
-          <p class="lede">Sai gives commercial drones a decision layer on board. <b>It makes the calls the mission plan can't anticipate.</b> It keeps a record of each one.</p>
+          <p class="lede">An onboard decision layer for commercial drones. <b>It makes the calls the plan can't anticipate,</b> and keeps a record of each one.</p>
           <div class="actions">
             <a href="#contact" class="btn">Get in touch</a>
             <a href="#demo" class="link">See the demo →</a>
           </div>
         </div>
-        <div class="ledger" aria-hidden="true">
-          <div class="row"><span class="mono">01</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">02</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">03</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">04</span><div class="rule"></div></div>
-          <div class="row live"><span class="mono">05</span><div class="rule"></div></div>
+        <div class="ledger">
+          <div class="cap mono">Scenarios demonstrated</div>
+          <div class="row"><span class="mono">01</span><span class="name">Close approach</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">02</span><span class="name">Link loss</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">03</span><span class="name">Low battery</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">04</span><span class="name">Containment</span><div class="rule"></div></div>
+          <div class="row live"><span class="mono">05</span><span class="name"></span><div class="rule"></div></div>
         </div>
       </div>
     </section>
@@ -335,25 +363,32 @@
             </div>
           </div>
         </div>
-        <svg class="scene" viewBox="0 0 600 400" fill="none" stroke-width="1.5" stroke-linecap="butt" aria-hidden="true">
-          <g class="world">
-            <path class="draw p1" pathLength="1" d="M420 330 V100 H560" />
-            <path class="draw p2" pathLength="1" d="M440 130 H545 M440 160 H545 M440 190 H545 M440 220 H545 M440 250 H545 M440 280 H545 M440 310 H545" stroke-width="1" />
-            <path class="draw p3" pathLength="1" d="M300 40 l24 -10 M330 46 l24 -10 M360 52 l24 -10 M320 64 l24 -10 M350 70 l24 -10" stroke-width="1" />
+        <svg class="scene" viewBox="0 0 600 400" fill="none" aria-hidden="true">
+          <defs>
+            <marker id="tick" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 6L6 0" stroke="currentColor" stroke-width="1"/></marker>
+          </defs>
+          <g class="g-grid"><path d="M0.0 0V400 M50.0 0V400 M100.0 0V400 M150.0 0V400 M200.0 0V400 M250.0 0V400 M300.0 0V400 M350.0 0V400 M400.0 0V400 M450.0 0V400 M500.0 0V400 M550.0 0V400 M600.0 0V400 M0 410.0H600 M0 360.0H600 M0 310.0H600 M0 260.0H600 M0 210.0H600 M0 160.0H600 M0 110.0H600 M0 60.0H600 M0 10.0H600 " stroke="currentColor" stroke-width="0.5" opacity="0.18"/></g>
+          <g class="g-sheet">
+            <g transform="translate(28 30)"><path d="M0 14V-10 M-5 -2L0 -10L5 -2" stroke="currentColor" stroke-width="1"/><text x="0" y="28" text-anchor="middle" class="t">N</text></g>
+            <g transform="translate(20 372)"><path d="M0 0H100 M0 -4V4 M50 -3V3 M100 -4V4" stroke="currentColor" stroke-width="1"/><text x="0" y="16" class="t">0</text><text x="100" y="16" text-anchor="middle" class="t">10 m</text></g>
+            <text x="300.0" y="270.0" text-anchor="middle" class="t">structure</text>
+            <text x="40.0" y="90.0" class="t">plan</text>
           </g>
-          <g class="plan">
-            <path class="draw p1" pathLength="1" d="M60 300 L200 150 L330 150 L470 250" stroke-dasharray="1" />
-            <path class="draw p2" pathLength="1" d="M56 296h8v8h-8z M196 146h8v8h-8z M326 146h8v8h-8z M466 246h8v8h-8z" />
-          </g>
-          <path class="bound draw b1" pathLength="1" d="M380 60 H600 M380 60 V370 H600" stroke-width="2" />
-          <path class="plan ghost" d="M380 185.7 L470 250" stroke-dasharray="3 5" />
-          <circle class="craft" r="5" />
-          <g transform="translate(380 185.7)">
-            <g class="hold">
-              <circle r="14" stroke="currentColor" stroke-width="1" />
-              <circle r="24" stroke="currentColor" stroke-width="0.75" opacity="0.5" />
+          <g class="g-struct"><path class="d d-struct" pathLength="1" d="M100.0 360.0 L500.0 360.0 500.0 180.0 360.0 180.0 360.0 140.0 240.0 140.0 240.0 180.0 100.0 180.0 Z" stroke="currentColor" stroke-width="1.5"/></g>
+          <g class="g-hatch"><path d="M100.0 180.0 M100.0 210.0 130.0 180.0 M100.0 240.0 160.0 180.0 M100.0 270.0 190.0 180.0 M100.0 300.0 220.0 180.0 M240.0 160.0 260.0 140.0 M100.0 330.0 290.0 140.0 M100.0 360.0 320.0 140.0 M130.0 360.0 350.0 140.0 M160.0 360.0 360.0 160.0 M190.0 360.0 370.0 180.0 M220.0 360.0 400.0 180.0 M250.0 360.0 430.0 180.0 M280.0 360.0 460.0 180.0 M310.0 360.0 490.0 180.0 M340.0 360.0 500.0 200.0 M370.0 360.0 500.0 230.0 M400.0 360.0 500.0 260.0 M430.0 360.0 500.0 290.0 M460.0 360.0 500.0 320.0 M490.0 360.0 500.0 350.0" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></g>
+          <g class="g-plan"><path class="d d-plan" pathLength="1" d="M40.0 100.0 L560.0 100.0" stroke="currentColor" stroke-width="1"/></g>
+          <g class="g-wp"><path d="M37.0 97.0h6v6h-6z M167.0 97.0h6v6h-6z M297.0 97.0h6v6h-6z M427.0 97.0h6v6h-6z M557.0 97.0h6v6h-6z" stroke="currentColor" stroke-width="1"/></g>
+          <g class="g-limit"><path class="d d-limit" pathLength="1" d="M40.0 180.0 L40.13 176.08 40.51 172.17 41.15 168.29 42.04 164.47 43.18 160.71 44.57 157.04 46.19 153.46 48.04 150.0 50.11 146.67 52.4 143.47 54.89 140.44 57.57 137.57 60.44 134.89 63.47 132.4 66.67 130.11 70.0 128.04 73.46 126.19 77.04 124.57 80.71 123.18 84.47 122.04 88.29 121.15 92.17 120.51 96.08 120.13 100.0 120.0 183.45 120.0 184.57 117.04 186.19 113.46 188.04 110.0 190.11 106.67 192.4 103.47 194.89 100.44 197.57 97.57 200.44 94.89 203.47 92.4 206.67 90.11 210.0 88.04 213.46 86.19 217.04 84.57 220.71 83.18 224.47 82.04 228.29 81.15 232.17 80.51 236.08 80.13 240.0 80.0 360.0 80.0 363.92 80.13 367.83 80.51 371.71 81.15 375.53 82.04 379.29 83.18 382.96 84.57 386.54 86.19 390.0 88.04 393.33 90.11 396.53 92.4 399.56 94.89 402.43 97.57 405.11 100.44 407.6 103.47 409.89 106.67 411.96 110.0 413.81 113.46 415.43 117.04 416.55 120.0 500.0 120.0 503.92 120.13 507.83 120.51 511.71 121.15 515.53 122.04 519.29 123.18 522.96 124.57 526.54 126.19 530.0 128.04 533.33 130.11 536.53 132.4 539.56 134.89 542.43 137.57 545.11 140.44 547.6 143.47 549.89 146.67 551.96 150.0 553.81 153.46 555.43 157.04 556.82 160.71 557.96 164.47 558.85 168.29 559.49 172.17 559.87 176.08 560.0 180.0 560.0 360.0 559.87 363.92 559.49 367.83 558.85 371.71 557.96 375.53 556.82 379.29 555.43 382.96 553.81 386.54 551.96 390.0 549.89 393.33 547.6 396.53 545.11 399.56 542.43 402.43 539.56 405.11 536.53 407.6 533.33 409.89 530.0 411.96 526.54 413.81 522.96 415.43 519.29 416.82 515.53 417.96 511.71 418.85 507.83 419.49 503.92 419.87 500.0 420.0 100.0 420.0 96.08 419.87 92.17 419.49 88.29 418.85 84.47 417.96 80.71 416.82 77.04 415.43 73.46 413.81 70.0 411.96 66.67 409.89 63.47 407.6 60.44 405.11 57.57 402.43 54.89 399.56 52.4 396.53 50.11 393.33 48.04 390.0 46.19 386.54 44.57 382.96 43.18 379.29 42.04 375.53 41.15 371.71 40.51 367.83 40.13 363.92 40.0 360.0 40.0 180.0" stroke="currentColor" stroke-width="1.25" stroke-dasharray="1"/></g>
+          <g class="g-limitlabel"><text x="510.0" y="60.0" class="t tl">limit</text></g>
+          <g class="g-ghost"><path d="M195.3 100.0 L560.0 100.0" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"/></g>
+          <g class="g-craft" style="--travel:155.3px">
+            <g transform="translate(40.0 100.0)">
+              <g class="dim1"><path d="M0 0V80.0" stroke="currentColor" stroke-width="0.75" marker-start="url(#tick)" marker-end="url(#tick)"/><text x="6" y="44.0" class="t">8 m</text></g>
+              <circle r="4.5" fill="currentColor" stroke="none"/>
             </g>
           </g>
+          <g class="g-dim2"><path d="M195.3 100.0 L240.0 140.0" stroke="currentColor" stroke-width="0.75" marker-start="url(#tick)" marker-end="url(#tick)"/><text x="225.65" y="116.0" class="t">6 m</text></g>
+          <g transform="translate(195.3 100.0)"><g class="g-hold"><circle r="13" stroke="currentColor" stroke-width="1"/><circle r="22" stroke="currentColor" stroke-width="0.75" opacity="0.5"/></g></g>
         </svg>
       </div>
     </section>
