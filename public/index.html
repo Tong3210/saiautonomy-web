@@ -4,293 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sai autonomy</title>
-  <meta name="description" content="An onboard decision layer for commercial drones. Sai makes the in-flight calls the mission plan can't anticipate, and keeps a record of each one." />
+  <meta name="description" content="An onboard decision layer for commercial drones. Sai makes the in-flight calls the plan can't anticipate, and keeps a record of each one." />
+  <link rel="canonical" href="https://saiautonomy.com/" />
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f5" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#24446a" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='24' fill='%23ffffff'/%3E%3Cg fill='%232a4f7b' transform='translate(31 13) scale(0.98)'%3E%3Cpath d='M0.05 101.56H4.42V0.04H0.05Z'/%3E%3Cpath d='M9.9 65.05H14.27V0.04H9.9Z'/%3E%3Cpath d='M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z'/%3E%3Cpath d='M23.6 55.13H83.27V50.76H23.6Z'/%3E%3Cpath d='M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z'/%3E%3Cpath d='M23.6 90.39H27.97V76.13H23.6Z'/%3E%3Cpath d='M78.9 90.39H83.27V76.13H78.9Z'/%3E%3C/g%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Sai autonomy" />
+  <meta property="og:title" content="Sai autonomy" />
+  <meta property="og:description" content="An onboard decision layer for commercial drones. It makes the in-flight calls the plan can't anticipate, and keeps a record of each one." />
+  <meta property="og:url" content="https://saiautonomy.com/" />
+  <meta property="og:image" content="https://saiautonomy.com/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    /* tokens */
-    :root {
-      --blue:      #2a4f7b;
-      --grey-1:    #dbdcdc;
-      --grey-2:    #9e9e9f;
-      --paper:     #f7f7f5;
-      --paper-2:   #efefec;
-      --ink:       #1f2326;
-      --ink-2:     #5c6166;
-      --line:      #dbdcdc;
-      --line-2:    #c4c6c8;
-      --accent:    var(--blue);
-      --on-accent: #ffffff;
-
-      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-
-      --ease: cubic-bezier(0.4, 0, 0.2, 1);
-      --t-quick: 160ms;
-      --t-std:   420ms;
-      --t-slow:  700ms;
-
-      --gutter: clamp(16px, 5vw, 72px);
-      --max: 1280px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --paper:   #24446a;
-        --paper-2: #203d60;
-        --ink:     #f2f2f0;
-        --ink-2:   #b9c2cc;
-        --line:    rgba(219, 220, 220, 0.28);
-        --line-2:  rgba(219, 220, 220, 0.45);
-        --accent:  #dbdcdc;
-        --on-accent: #24446a;
-      }
-    }
-    :root[data-theme="dark"] {
-      --paper:   #24446a;
-      --paper-2: #203d60;
-      --ink:     #f2f2f0;
-      --ink-2:   #b9c2cc;
-      --line:    rgba(219, 220, 220, 0.28);
-      --line-2:  rgba(219, 220, 220, 0.45);
-      --accent:  #dbdcdc;
-      --on-accent: #24446a;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--sans);
-      font-size: 17px;
-      line-height: 1.55;
-      color: var(--ink);
-      background: var(--paper);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-    a { color: inherit; text-decoration: none; }
-    h1, h2, h3 { text-wrap: balance; }
-    p { text-wrap: pretty; }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
-    .mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.01em; color: var(--ink-2); }
-    .rule { height: 1px; background: var(--line); transform-origin: left; }
-
-    /* ---------- nav ---------- */
-    nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); }
-    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .brand { display: flex; align-items: center; gap: 12px; color: var(--accent); }
-    .brand { gap: 10px; }
-    .brand .m { height: 34px; width: auto; display: block; }
-    .brand .wm { display: flex; flex-direction: column; justify-content: center; font-size: 12.5px; line-height: 1.2; letter-spacing: 0.1em; font-weight: 500; color: var(--accent); padding-top: 1px; }
-    .brand .wm span { display: block; }
-    .nav-links { display: flex; gap: 28px; align-items: center; font-size: 14px; color: var(--ink-2); }
-    .nav-links a { transition: color var(--t-quick) var(--ease); }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-cta { color: var(--ink); border: 1px solid var(--line-2); padding: 8px 14px; border-radius: 2px; transition: border-color var(--t-quick) var(--ease), background var(--t-quick) var(--ease); }
-    .nav-cta:hover { border-color: var(--ink); }
-    nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
-
-    /* ---------- hero ---------- */
-    .hero { padding: clamp(56px, 10vh, 120px) 0 clamp(48px, 8vh, 96px); }
-    .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 64px); align-items: end; }
-    .mark { color: var(--accent); width: clamp(96px, 12vw, 150px); height: auto; display: block; margin-bottom: clamp(28px, 4vh, 48px); }
-    .h1 {
-      font-size: clamp(40px, 6.2vw, 84px);
-      font-weight: 500;
-      letter-spacing: -0.028em;
-      line-height: 1.02;
-      max-width: 15ch;
-      text-wrap: balance;
-      color: var(--ink);
-    }
-    .h1 .w { display: inline-block; animation: word-in var(--t-slow) var(--ease) both; }
-    .lede { margin-top: clamp(20px, 3vh, 32px); font-size: clamp(17px, 1.4vw, 21px); line-height: 1.5; color: var(--ink-2); max-width: 46ch; animation: fade-up var(--t-slow) var(--ease) 2.05s both; }
-    .lede b { font-weight: 500; color: var(--ink); }
-    .actions { margin-top: clamp(28px, 4vh, 44px); display: flex; gap: 22px; align-items: center; animation: fade-up var(--t-slow) var(--ease) 2.2s both; }
-    .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--on-accent); padding: 14px 22px; border-radius: 2px; font-weight: 500; font-size: 15px; transition: transform var(--t-quick) var(--ease), opacity var(--t-quick) var(--ease); }
-    .btn:hover { transform: translateY(-1px); opacity: 0.92; }
-    .btn:active { transform: translateY(0); transition-duration: 80ms; }
-    .link { font-size: 15px; color: var(--ink-2); border-bottom: 1px solid var(--line-2); padding-bottom: 2px; transition: color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease); }
-    .link:hover { color: var(--ink); border-color: var(--ink); }
-
-    /* ledger */
-    .ledger { display: grid; gap: 18px; padding-bottom: 6px; }
-    .ledger .cap { margin-bottom: 4px; opacity: 0; animation: fade-in var(--t-std) var(--ease) 1.85s both; }
-    .ledger .row { display: grid; grid-template-columns: 40px 1fr; gap: 6px 14px; align-items: baseline; }
-    .ledger .name { font-size: 15px; color: var(--ink); opacity: 0; animation: fade-in var(--t-std) var(--ease) 2.5s both; }
-    .ledger .row .rule { grid-column: 1 / -1; }
-    .ledger .rule { animation: rule-in var(--t-slow) var(--ease) both; }
-    .ledger .row:nth-child(1) .rule { animation-delay: 1.9s; }
-    .ledger .row:nth-child(2) .rule { animation-delay: 2.0s; }
-    .ledger .row:nth-child(3) .rule { animation-delay: 2.1s; }
-    .ledger .row:nth-child(4) .rule { animation-delay: 2.2s; }
-    .ledger .row:nth-child(5) .rule { animation-delay: 2.3s; }
-    .ledger .mono { opacity: 0; animation: fade-in var(--t-std) var(--ease) 2.5s both; }
-    .ledger .row.live .mono, .ledger .row.live .name { color: var(--accent); }
-    .ledger .row.live .rule { background: var(--accent); }
-
-    /* ---------- the moment (scroll-driven) ---------- */
-    .moment { view-timeline-name: --moment; view-timeline-axis: block; height: 320vh; position: relative; }
-    .moment .stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: center; }
-    .beats { position: relative; min-height: 220px; }
-    .beat { position: absolute; inset: 0; opacity: 0; animation: beat1 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .beat .mono { display: flex; gap: 14px; align-items: baseline; margin-bottom: 18px; white-space: nowrap; }
-    .beat h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; max-width: 14ch; }
-    .beat p { margin-top: 16px; color: var(--ink-2); max-width: 40ch; font-size: clamp(16px, 1.25vw, 19px); }
-    .beat-2 { animation-name: beat2; }
-    .beat-3 { animation-name: beat3; }
-    .counter { position: absolute; left: 0; bottom: -40px; }
-    .scene { width: 100%; height: auto; display: block; color: var(--ink-2); }
-    .scene .t { font-family: var(--mono); font-size: 11px; fill: var(--ink-2); }
-    .scene .tl { fill: var(--accent); }
-    .scene .g-struct, .scene .g-hatch { color: var(--ink); }
-    .scene .g-limit, .scene .g-craft, .scene .g-dim2, .scene .g-hold { color: var(--accent); }
-    .scene .d { stroke-dasharray: 1; stroke-dashoffset: 1; }
-    .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold, .scene .g-ghost { opacity: 0; }
-    .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold, .scene .g-ghost, .scene .d, .scene .dim1 {
-      animation-duration: 1s; animation-timing-function: linear; animation-fill-mode: both;
-      animation-timeline: --moment; animation-range: contain 0% contain 100%;
-    }
-    .scene .g-grid { animation-name: s-grid; }
-    .scene .d-struct { animation-name: s-struct; }
-    .scene .g-hatch { animation-name: s-hatch; }
-    .scene .d-plan { animation-name: s-plan; }
-    .scene .g-wp { animation-name: s-wp; }
-    .scene .g-sheet { animation-name: s-sheet; }
-    .scene .d-limit { animation-name: s-limit; }
-    .scene .g-limitlabel { animation-name: s-limitlabel; }
-    .scene .g-craft { animation-name: s-craft; }
-    .scene .dim1 { animation-name: s-dim1; }
-    .scene .g-dim2 { animation-name: s-dim2; }
-    .scene .g-hold { transform-origin: 0 0; animation-name: s-hold; }
-    .scene .g-ghost { animation-name: s-ghost; }
-    .record { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 12px 18px; align-items: baseline; opacity: 0; animation: record 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
-    .record .k { font-family: var(--mono); font-size: 12px; color: var(--ink-2); letter-spacing: 0.04em; }
-    .record .v { font-family: var(--mono); font-size: 13px; color: var(--ink); text-wrap: pretty; }
-    .record .k { white-space: nowrap; }
-    .record .v em { font-style: normal; color: var(--accent); }
-
-    /* ---------- footer ---------- */
-    footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
-    .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
-    .foot-links { display: flex; gap: 28px; padding-top: 6px; }
-    .foot-brand .brand { color: var(--accent); }
-    .foot-brand .m { height: 30px; }
-    .foot-brand .wm { font-size: 11.5px; }
-    .foot-brand p { margin-top: 14px; max-width: 34ch; }
-    .foot-links a { transition: color var(--t-quick) var(--ease); }
-    .foot-links a:hover { color: var(--ink); }
-    .foot-bottom { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; }
-    .theme-toggle { background: none; border: 1px solid var(--line-2); color: var(--ink-2); font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 2px; cursor: pointer; }
-
-    /* ---------- keyframes ---------- */
-    @keyframes draw    { to { stroke-dashoffset: 0; } }
-    @keyframes rule-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-    @keyframes word-in { from { opacity: 0; transform: translateY(0.35em); } to { opacity: 1; transform: none; } }
-    @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes beat1 { 0%, 2%  { opacity: 0; transform: translateY(12px); } 8%, 30%  { opacity: 1; transform: none; } 36%, 100% { opacity: 0; transform: translateY(-12px); } }
-    @keyframes beat2 { 0%, 34% { opacity: 0; transform: translateY(12px); } 40%, 58% { opacity: 1; transform: none; } 64%, 100% { opacity: 0; transform: translateY(-12px); } }
-    @keyframes beat3 { 0%, 62% { opacity: 0; transform: translateY(12px); } 68%, 100% { opacity: 1; transform: none; } }
-    @keyframes record { 0%, 78% { opacity: 0; transform: translateY(8px); } 84%, 100% { opacity: 1; transform: none; } }
-    @keyframes s-grid   { 0% { opacity: 0; } 8%, 100% { opacity: 1; } }
-    @keyframes s-struct { 0%, 4% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
-    @keyframes s-hatch  { 0%, 16% { opacity: 0; } 24%, 100% { opacity: 1; } }
-    @keyframes s-plan   { 0%, 10% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
-    @keyframes s-wp     { 0%, 24% { opacity: 0; } 30%, 100% { opacity: 1; } }
-    @keyframes s-sheet  { 0%, 22% { opacity: 0; } 30%, 100% { opacity: 1; } }
-    @keyframes s-limit  { 0%, 38% { stroke-dashoffset: 1; } 56%, 100% { stroke-dashoffset: 0; } }
-    @keyframes s-limitlabel { 0%, 52% { opacity: 0; } 58%, 100% { opacity: 1; } }
-    @keyframes s-craft  { 0%, 60% { opacity: 0; transform: translateX(0); } 62% { opacity: 1; transform: translateX(0); } 78%, 100% { opacity: 1; transform: translateX(var(--travel)); } }
-    @keyframes s-dim1   { 0%, 79% { opacity: 1; } 84%, 100% { opacity: 0; } }
-    @keyframes s-dim2   { 0%, 79% { opacity: 0; } 84%, 100% { opacity: 1; } }
-    @keyframes s-hold   { 0%, 78% { opacity: 0; transform: scale(0.4); } 84% { opacity: 1; transform: scale(1.12); } 90%, 100% { opacity: 1; transform: scale(1); } }
-    @keyframes s-ghost  { 0%, 78% { opacity: 0; } 86%, 100% { opacity: 0.55; } }
-
-    /* mark */
-    .mark .s { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw var(--t-slow) var(--ease) both; }
-    .mark .a1 { animation-delay: 0.10s; animation-duration: 0.55s; }
-    .mark .a2 { animation-delay: 0.18s; animation-duration: 0.50s; }
-    .mark .b1 { animation-delay: 0.55s; animation-duration: 0.65s; }
-    .mark .b2 { animation-delay: 0.70s; animation-duration: 0.55s; }
-    .mark .b3 { animation-delay: 1.00s; animation-duration: 0.40s; }
-    .mark .b4 { animation-delay: 1.08s; animation-duration: 0.40s; }
-    .mark .c1 { animation-delay: 1.38s; animation-duration: 0.30s; }
-    .mark .c2 { animation-delay: 1.38s; animation-duration: 0.30s; }
-    .mark .c3 { animation-delay: 1.48s; animation-duration: 0.45s; }
-    .h1 .w:nth-child(1) { animation-delay: 1.55s; }
-    .h1 .w:nth-child(2) { animation-delay: 1.62s; }
-    .h1 .w:nth-child(3) { animation-delay: 1.69s; }
-    .h1 .w:nth-child(4) { animation-delay: 1.76s; }
-    .h1 .w:nth-child(5) { animation-delay: 1.83s; }
-    .h1 .w:nth-child(6) { animation-delay: 1.90s; }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-      .mark .s { stroke-dashoffset: 0; }
-      .h1 .w, .lede, .actions, .ledger .mono, .beat, .record { opacity: 1; transform: none; }
-      .scene .d { stroke-dashoffset: 0; animation: none; }
-      .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold { opacity: 1; animation: none; }
-      .scene .g-ghost { opacity: 0.55; animation: none; }
-      .scene .g-craft { transform: translateX(var(--travel)); }
-      .scene .dim1 { opacity: 0; animation: none; }
-      .scene .g-hold { transform: none; }
-      .moment { height: auto; }
-      .moment .stage { position: static; height: auto; padding: 80px 0; }
-      .beats { min-height: 0; display: grid; gap: 40px; }
-      .beat { position: static; }
-    }
-    @media (max-width: 860px) {
-      .hero-grid, .moment .stage { grid-template-columns: 1fr; }
-      .ledger { display: none; }
-      .moment { height: auto; }
-      .moment .stage { position: static; height: auto; padding: 64px 0; gap: 40px; }
-      .beats { min-height: 0; display: grid; gap: 40px; }
-      .beat { position: static; opacity: 1; animation: none; transform: none; }
-      .counter { display: none; }
-      .scene .d { stroke-dashoffset: 0; animation: none; }
-      .scene .g-grid, .scene .g-hatch, .scene .g-wp, .scene .g-sheet, .scene .g-limitlabel, .scene .g-craft, .scene .g-dim2, .scene .g-hold { opacity: 1; animation: none; }
-      .scene .g-ghost { opacity: 0.55; animation: none; }
-      .scene .g-craft { transform: translateX(var(--travel)); }
-      .scene .dim1 { opacity: 0; animation: none; }
-      .scene .g-hold { transform: none; }
-      .record { opacity: 1; animation: none; }
-      .foot-links { flex-wrap: wrap; gap: 16px 24px; }
-      .nav-links { gap: 18px; }
-      .nav-links a:not(.nav-cta) { display: none; }
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/site.css" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="sai-mark" viewBox="0 0 83.3 101.6">
-      <path d="M0.05 101.56H4.42V0.04H0.05Z"/>
-      <path d="M9.9 65.05H14.27V0.04H9.9Z"/>
-      <path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/>
-      <path d="M23.6 55.13H83.27V50.76H23.6Z"/>
-      <path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/>
-      <path d="M23.6 90.39H27.97V76.13H23.6Z"/>
-      <path d="M78.9 90.39H83.27V76.13H78.9Z"/>
-    </symbol>
-  </svg>
+  <svg class="defs" aria-hidden="true"><symbol id="sai-mark" viewBox="0 0 83.3 101.6"><path d="M0.05 101.56H4.42V0.04H0.05Z"/><path d="M9.9 65.05H14.27V0.04H9.9Z"/><path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/><path d="M23.6 55.13H83.27V50.76H23.6Z"/><path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/><path d="M23.6 90.39H27.97V76.13H23.6Z"/><path d="M78.9 90.39H83.27V76.13H78.9Z"/></symbol></svg>
+
   <nav>
     <div class="wrap nav-inner">
-      <a href="#" class="brand" aria-label="Sai autonomy">
+      <a href="/" class="brand" aria-label="Sai autonomy">
         <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" aria-hidden="true"><use href="#sai-mark"/></svg>
         <span class="wm" aria-hidden="true"><span>Sai</span><span>autonomy</span></span>
       </a>
       <div class="nav-links">
-        <a href="#moment">Product</a>
-        <a href="#demo">Demo</a>
-        <a href="#contact" class="nav-cta">Contact</a>
+        <a href="/#moment">Product</a>
+        <a href="/#contact" class="nav-cta">Contact</a>
       </div>
     </div>
     <div class="rule"></div>
   </nav>
+
   <main>
     <section class="hero">
       <div class="wrap hero-grid">
@@ -312,48 +64,43 @@
                 </g>
               </mask>
             </defs>
-            <g fill="currentColor" mask="url(#mk)">
-      <path d="M0.05 101.56H4.42V0.04H0.05Z"/>
-      <path d="M9.9 65.05H14.27V0.04H9.9Z"/>
-      <path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/>
-      <path d="M23.6 55.13H83.27V50.76H23.6Z"/>
-      <path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/>
-      <path d="M23.6 90.39H27.97V76.13H23.6Z"/>
-      <path d="M78.9 90.39H83.27V76.13H78.9Z"/>
-            </g>
+            <g fill="currentColor" mask="url(#mk)"><path d="M0.05 101.56H4.42V0.04H0.05Z"/><path d="M9.9 65.05H14.27V0.04H9.9Z"/><path d="M42.45 4.46H50.25L36.08 41.46H40.76L53.43 8.39L66.1 41.46H70.78L56.61 4.46H64.41L78.58 41.46H83.27L67.42 0.09H39.44L23.6 41.46H28.28Z"/><path d="M23.6 55.13H83.27V50.76H23.6Z"/><path d="M23.6 65.01H51.24V101.56H55.62V65.01H83.27V60.64H23.6Z"/><path d="M23.6 90.39H27.97V76.13H23.6Z"/><path d="M78.9 90.39H83.27V76.13H78.9Z"/></g>
           </svg>
+
           <h1 class="h1"><span class="w">We</span> <span class="w">design</span> <span class="w">the</span> <span class="w">moments</span> <span class="w">that</span> <span class="w">matter</span></h1>
           <p class="lede">An onboard decision layer for commercial drones. <b>It makes the calls the plan can't anticipate,</b> and keeps a record of each one.</p>
           <div class="actions">
             <a href="#contact" class="btn">Get in touch</a>
-            <a href="#demo" class="link">See the demo →</a>
+            <a href="#moment" class="link">How it decides →</a>
           </div>
         </div>
-        <div class="ledger">
-          <div class="cap mono">Scenarios demonstrated</div>
-          <div class="row"><span class="mono">01</span><span class="name">Close approach</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">02</span><span class="name">Link loss</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">03</span><span class="name">Low battery</span><div class="rule"></div></div>
-          <div class="row"><span class="mono">04</span><span class="name">Containment</span><div class="rule"></div></div>
-          <div class="row live"><span class="mono">05</span><span class="name"></span><div class="rule"></div></div>
+
+        <div class="ledger" aria-hidden="true">
+          <div class="cap mono">Moments like these</div>
+          <div class="row"><span class="mono">01</span><span class="name">Structure closer than the plan assumed</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">02</span><span class="name">Link lost mid-pass</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">03</span><span class="name">Battery at the return margin</span><div class="rule"></div></div>
+          <div class="row"><span class="mono">04</span><span class="name">Edge of the operating volume</span><div class="rule"></div></div>
+          <div class="row live"><span class="mono">05</span><span class="name"><span class="typing">Wind above the job limit</span></span><div class="rule"></div></div>
         </div>
       </div>
     </section>
+
     <section class="moment" id="moment">
       <div class="stage wrap">
         <div class="beats">
           <div class="beat beat-1">
-            <div class="mono"><span>01</span><span>Two domains</span></div>
+            <div class="eyebrow mono"><span>01</span><span>Two domains</span></div>
             <h2>The plan, and the world the aircraft is in.</h2>
             <p>A mission is drawn before takeoff. The site, the wind and the structure are what the aircraft meets once it is up.</p>
           </div>
           <div class="beat beat-2">
-            <div class="mono"><span>02</span><span>One line between them</span></div>
+            <div class="eyebrow mono"><span>02</span><span>One line between them</span></div>
             <h2>Sai sits on that line.</h2>
             <p>際 is the word for it. The edge where two things meet. Every job has one, whether or not anyone drew it.</p>
           </div>
           <div class="beat beat-3">
-            <div class="mono"><span>03</span><span>One instant</span></div>
+            <div class="eyebrow mono"><span>03</span><span>One instant</span></div>
             <h2>The call is made there, in that second.</h2>
             <p>When the world crosses the plan, the aircraft decides on board and writes down what it did.</p>
             <div class="record" aria-label="Example record entry">
@@ -381,7 +128,7 @@
           <g class="g-limit"><path class="d d-limit" pathLength="1" d="M54.0 198.0 L54.12 194.47 54.46 190.95 55.04 187.47 55.84 184.02 56.87 180.64 58.11 177.34 59.57 174.12 61.23 171.0 63.1 168.0 65.16 165.13 67.4 162.4 69.82 159.82 72.4 157.4 75.13 155.16 78.0 153.1 81.0 151.23 84.12 149.57 87.34 148.11 90.64 146.87 94.02 145.84 97.47 145.04 100.95 144.46 104.47 144.12 108.0 144.0 183.11 144.0 184.11 141.34 185.57 138.12 187.23 135.0 189.1 132.0 191.16 129.13 193.4 126.4 195.82 123.82 198.4 121.4 201.13 119.16 204.0 117.1 207.0 115.23 210.12 113.57 213.34 112.11 216.64 110.87 220.02 109.84 223.47 109.04 226.95 108.46 230.47 108.12 234.0 108.0 342.0 108.0 345.53 108.12 349.05 108.46 352.53 109.04 355.98 109.84 359.36 110.87 362.66 112.11 365.88 113.57 369.0 115.23 372.0 117.1 374.87 119.16 377.6 121.4 380.18 123.82 382.6 126.4 384.84 129.13 386.9 132.0 388.77 135.0 390.43 138.12 391.89 141.34 392.89 144.0 468.0 144.0 471.53 144.12 475.05 144.46 478.53 145.04 481.98 145.84 485.36 146.87 488.66 148.11 491.88 149.57 495.0 151.23 498.0 153.1 500.87 155.16 503.6 157.4 506.18 159.82 508.6 162.4 510.84 165.13 512.9 168.0 514.77 171.0 516.43 174.12 517.89 177.34 519.13 180.64 520.16 184.02 520.96 187.47 521.54 190.95 521.88 194.47 522.0 198.0 522.0 360.0 521.88 363.53 521.54 367.05 520.96 370.53 520.16 373.98 519.13 377.36 517.89 380.66 516.43 383.88 514.77 387.0 512.9 390.0 510.84 392.87 508.6 395.6 506.18 398.18 503.6 400.6 500.87 402.84 498.0 404.9 495.0 406.77 491.88 408.43 488.66 409.89 485.36 411.13 481.98 412.16 478.53 412.96 475.05 413.54 471.53 413.88 468.0 414.0 108.0 414.0 104.47 413.88 100.95 413.54 97.47 412.96 94.02 412.16 90.64 411.13 87.34 409.89 84.12 408.43 81.0 406.77 78.0 404.9 75.13 402.84 72.4 400.6 69.82 398.18 67.4 395.6 65.16 392.87 63.1 390.0 61.23 387.0 59.57 383.88 58.11 380.66 56.87 377.36 55.84 373.98 55.04 370.53 54.46 367.05 54.12 363.53 54.0 360.0 54.0 198.0" stroke="currentColor" stroke-width="1.25" stroke-dasharray="1"/></g>
           <g class="g-limitlabel"><text x="504.0" y="40.5" class="t tl">limit</text></g>
           <g class="g-ghost"><path d="M193.77 126.0 L522.0 126.0" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"/></g>
-          <g class="g-craft" style="--travel:139.77px">
+          <g class="g-craft">
             <g transform="translate(54.0 126.0)">
               <g class="dim1"><path d="M0 0V72.0" stroke="currentColor" stroke-width="0.75" marker-start="url(#tick)" marker-end="url(#tick)"/><text x="6" y="40.0" class="t">8 m</text></g>
               <circle r="4.5" fill="currentColor" stroke="none"/>
@@ -392,12 +139,64 @@
         </svg>
       </div>
     </section>
-    <section class="wrap" id="demo" style="padding: 10vh 0 0;">
-      <div class="mono">Concept simulation</div>
-      <p style="margin-top:12px; max-width:52ch; color:var(--ink-2);">[Comp ends here. The demo, the three statements and the contact form follow the same system in the full build.]</p>
+
+    <section class="what wrap" id="what">
+      <div class="mono">What it does</div>
+      <div class="grid">
+        <div class="item">
+          <h3>Decides on board</h3>
+          <p>The call is made on the aircraft, in the second it's needed.</p>
+        </div>
+        <div class="item">
+          <h3>Leaves a record</h3>
+          <p>Every decision is written down as it happens. What the aircraft saw, what it chose, and why. Read it after the flight, or hand it to whoever needs to trust the decision.</p>
+        </div>
+        <div class="item">
+          <h3>Fits what you already fly</h3>
+          <p>It rides on a small companion computer beside the flight controller. It talks over the same link a ground station uses. Nothing to replace, nothing to relearn.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact wrap" id="contact">
+      <div class="head">
+        <div class="mono">Contact</div>
+        <h2>Talk to us</h2>
+        <p class="sub">If you fly inspection missions, we'd like to hear about the moments the plan didn't cover.</p>
+      </div>
+      <div class="form-wrap">
+        <form id="contactForm" action="/api/early-access" method="POST" novalidate>
+          <div class="field">
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" placeholder="you@company.com" required />
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label for="company_website">Company website</label>
+            <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="organization">Organization <span class="opt">optional</span></label>
+            <input type="text" id="organization" name="organization" placeholder="Who you fly for" maxlength="200" />
+          </div>
+          <div class="field">
+            <label for="message">Message <span class="req">*</span></label>
+            <textarea id="message" name="message" placeholder="What do you fly, and what would you want this to handle?" maxlength="2000" required></textarea>
+          </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5Tz_aL7C6JYtdb" data-theme="auto" data-size="flexible"></div>
+          <div><button type="submit" class="btn" id="submitBtn">Send message</button></div>
+          <p class="form-error" id="formError" role="alert" hidden></p>
+          <p class="form-note">We read every message and reply.</p>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <svg class="m" viewBox="0 0 83.3 101.6" fill="currentColor" aria-hidden="true"><use href="#sai-mark"/></svg>
+          <div class="title">Message received</div>
+          <div class="sub">We'll be in touch.</div>
+        </div>
+      </div>
     </section>
   </main>
-  <footer id="contact">
+
+  <footer>
     <div class="wrap">
       <div class="foot-grid">
         <div class="foot-brand">
@@ -408,17 +207,17 @@
           <p>An onboard decision layer for commercial drones.</p>
         </div>
         <div class="foot-links">
-          <a href="#moment">Overview</a>
-          <a href="#demo">Demo</a>
-          <a href="#contact">Contact</a>
-          <a href="#">Privacy</a>
+          <a href="/#what">Overview</a>
+          <a href="/#contact">Contact</a>
+          <a href="/privacy">Privacy</a>
         </div>
       </div>
       <div class="foot-bottom">
         <span>© 2026 Sai autonomy</span>
-        <button class="theme-toggle" type="button" onclick="(function(){var r=document.documentElement;var cur=r.getAttribute('data-theme');var sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var now=cur||sys;r.setAttribute('data-theme', now==='dark'?'light':'dark');})()">Toggle light / dark (comp only)</button>
       </div>
     </div>
   </footer>
+
+  <script src="/assets/site.js" defer></script>
 </body>
 </html>
