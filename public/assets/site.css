@@ -134,7 +134,7 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 .scene .g-sheet { animation-name: s-sheet; }
 .scene .d-limit { animation-name: s-limit; }
 .scene .g-limitlabel { animation-name: s-limitlabel; }
-.scene .g-craft { animation-name: s-craft; --travel: 139.77px; }
+.scene .g-craft { animation-name: s-craft; --travel: 149.43px; }
 .scene .dim1 { animation-name: s-dim1; }
 .scene .g-dim2 { animation-name: s-dim2; }
 .scene .g-hold { transform-origin: 0 0; animation-name: s-hold; }
