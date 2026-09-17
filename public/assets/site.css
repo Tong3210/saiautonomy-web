@@ -213,12 +213,12 @@ footer { border-top: 1px solid var(--line); background: var(--paper-2); padding:
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes type { from { max-width: 0; } to { max-width: 30ch; } }
 @keyframes caret { 0%, 50% { border-color: var(--accent); } 50.01%, 100% { border-color: transparent; } }
-@keyframes beat1 { 0%, 2% { opacity: 0; transform: translateY(12px); } 8%, 30% { opacity: 1; transform: none; } 36%, 100% { opacity: 0; transform: translateY(-12px); } }
+@keyframes beat1 { 0% { opacity: 0; transform: translateY(12px); } 4%, 30% { opacity: 1; transform: none; } 36%, 100% { opacity: 0; transform: translateY(-12px); } }
 @keyframes beat2 { 0%, 34% { opacity: 0; transform: translateY(12px); } 40%, 58% { opacity: 1; transform: none; } 64%, 100% { opacity: 0; transform: translateY(-12px); } }
 @keyframes beat3 { 0%, 62% { opacity: 0; transform: translateY(12px); } 68%, 100% { opacity: 1; transform: none; } }
 @keyframes record { 0%, 78% { opacity: 0; transform: translateY(8px); } 84%, 100% { opacity: 1; transform: none; } }
-@keyframes s-grid { 0% { opacity: 0; } 8%, 100% { opacity: 1; } }
-@keyframes s-struct { 0%, 4% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
+@keyframes s-grid { 0% { opacity: 0; } 3%, 100% { opacity: 1; } }
+@keyframes s-struct { 0%, 2% { stroke-dashoffset: 1; } 18%, 100% { stroke-dashoffset: 0; } }
 @keyframes s-hatch { 0%, 16% { opacity: 0; } 24%, 100% { opacity: 1; } }
 @keyframes s-plan { 0%, 10% { stroke-dashoffset: 1; } 30%, 100% { stroke-dashoffset: 0; } }
 @keyframes s-wp { 0%, 24% { opacity: 0; } 30%, 100% { opacity: 1; } }
