@@ -11,6 +11,10 @@
   --line-2: #c4c6c8;
   --accent: var(--blue);
   --on-accent: #ffffff;
+  --band-bg: #2a4f7b;
+  --band-ink: #f2f2f0;
+  --band-ink-2: #c3cad3;
+  --band-line: rgba(219, 220, 220, 0.3);
   --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -102,7 +106,7 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 .ledger .name { will-change: transform; }
 
 /* the moment */
-.moment { view-timeline-name: --moment; view-timeline-axis: block; height: 320vh; position: relative; }
+.moment { view-timeline-name: --moment; view-timeline-axis: block; height: 320vh; position: relative; background: var(--paper-2); }
 .moment .stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: center; }
 .beats { position: relative; min-height: 260px; }
 .beat { position: absolute; inset: 0; opacity: 0; animation: beat1 1s linear both; animation-timeline: --moment; animation-range: contain 0% contain 100%; }
@@ -141,15 +145,16 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 .scene .g-ghost { animation-name: s-ghost; }
 
 /* statements */
-.what { padding-top: clamp(64px, 12vh, 140px); }
+.what { padding: clamp(64px, 12vh, 140px) 0; background: var(--band-bg); color: var(--band-ink); }
+.what h2, .what h3 { color: var(--band-ink); }
 .what h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; }
 .what .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 4vw, 56px); margin-top: 36px; }
-.what .item { padding: 28px 0 8px; border-top: 1px solid var(--line); animation: fade-up var(--t-slow) var(--ease) both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+.what .item { padding: 28px 0 8px; border-top: 1px solid var(--band-line); animation: fade-up var(--t-slow) var(--ease) both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
 .what h3 { font-size: clamp(20px, 1.7vw, 24px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }
-.what p { margin-top: 12px; color: var(--ink-2); font-size: 16px; max-width: 34ch; }
+.what p { margin-top: 12px; color: var(--band-ink-2); font-size: 16px; max-width: 34ch; }
 
 /* contact */
-.contact { padding-top: clamp(64px, 12vh, 140px); }
+.contact { padding: clamp(64px, 12vh, 140px) 0 clamp(48px, 8vh, 96px); }
 .contact .inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: start; }
 .contact .head { max-width: 40ch; }
 .contact h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; }
@@ -189,7 +194,7 @@ textarea { resize: vertical; min-height: 120px; }
 .page .meta { margin-top: 32px; }
 
 /* footer */
-footer { margin-top: 12vh; border-top: 1px solid var(--line); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
+footer { border-top: 1px solid var(--line); background: var(--paper-2); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
 .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
 .foot-links { display: flex; gap: 28px; padding-top: 6px; }
 .foot-links a { transition: color var(--t-quick) var(--ease); }
