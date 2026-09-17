@@ -2,7 +2,7 @@
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[A-Za-z]{2,}$/;
 const MAX_ORGANIZATION = 200;
 const MAX_MESSAGE = 2000;
-const ALLOWED_HOSTS = new Set(['saiautonomy.com', 'www.saiautonomy.com', 'saiautonomy-web.pages.dev']);
+const ALLOWED_HOSTS = new Set(['saiautonomy.com', 'www.saiautonomy.com']);
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 function json(body, status = 200) {
