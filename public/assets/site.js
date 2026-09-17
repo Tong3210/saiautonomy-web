@@ -1,4 +1,12 @@
 (function () {
+  var t = new URLSearchParams(window.location.search).get('theme');
+  if (t === 'light' || t === 'dark') {
+    document.documentElement.setAttribute('data-theme', t);
+    var w = document.querySelector('.cf-turnstile');
+    if (w) w.setAttribute('data-theme', t);
+  }
+})();
+(function () {
   var form = document.getElementById('contactForm');
   if (!form) return;
   var btn = document.getElementById('submitBtn');
