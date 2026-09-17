@@ -1,20 +1,4 @@
-/**
- * Contact form intake for saiautonomy.com.
- *
- * Browser → POST /api/early-access (this Function, same origin)
- *   1. reject unknown origins and honeypot hits
- *   2. validate the three fields (email, optional organization, message)
- *   3. verify the Turnstile token with Cloudflare
- *   4. forward the submission to the Google Apps Script web app,
- *      authenticated with a shared secret, which writes the sheet
- *      and emails the company inbox
- *
- * Environment (Pages → Settings → Variables and Secrets):
- *   TURNSTILE_SECRET_KEY  Turnstile widget secret
- *   APPS_SCRIPT_URL       Apps Script web-app /exec URL
- *   FORM_SHARED_SECRET    random string, same value in Apps Script properties
- */
-
+/** Contact form intake: validates the fields, verifies the Turnstile token, forwards the message. */
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[A-Za-z]{2,}$/;
 const MAX_ORGANIZATION = 200;
 const MAX_MESSAGE = 2000;
