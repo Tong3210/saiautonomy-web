@@ -16,6 +16,8 @@
   --band-ink: #1f2326;
   --band-ink-2: #5c6166;
   --band-line: rgba(42, 79, 123, 0.22);
+  --contact-bg: var(--paper);
+  --foot-bg: var(--paper-2);
   --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -35,11 +37,13 @@
     --line-2: rgba(219, 220, 220, 0.45);
     --accent: #dbdcdc;
     --on-accent: #24446a;
-    --band-bg: #2a4f7b;
+    --band-bg: #24446a;
     --band-head: #f2f2f0;
     --band-ink: #f2f2f0;
-    --band-ink-2: #c3cad3;
-    --band-line: rgba(219, 220, 220, 0.3);
+    --band-ink-2: #b9c2cc;
+    --band-line: rgba(219, 220, 220, 0.28);
+    --contact-bg: #203d60;
+    --foot-bg: #24446a;
   }
 }
 
@@ -52,11 +56,13 @@
   --line-2: rgba(219, 220, 220, 0.45);
   --accent: #dbdcdc;
   --on-accent: #24446a;
-  --band-bg: #2a4f7b;
+  --band-bg: #24446a;
   --band-head: #f2f2f0;
   --band-ink: #f2f2f0;
-  --band-ink-2: #c3cad3;
-  --band-line: rgba(219, 220, 220, 0.3);
+  --band-ink-2: #b9c2cc;
+  --band-line: rgba(219, 220, 220, 0.28);
+  --contact-bg: #203d60;
+  --foot-bg: #24446a;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -176,7 +182,7 @@ nav .rule { animation: rule-in var(--t-slow) var(--ease) 1.4s both; }
 .what p { margin-top: 12px; color: var(--band-ink-2); font-size: 16px; max-width: 34ch; }
 
 /* contact */
-.contact { padding: clamp(64px, 12vh, 140px) 0 clamp(48px, 8vh, 96px); }
+.contact { padding: clamp(64px, 12vh, 140px) 0 clamp(48px, 8vh, 96px); background: var(--contact-bg); }
 .contact .inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: start; }
 .contact .head { max-width: 40ch; }
 .contact h2 { font-size: clamp(30px, 3.4vw, 46px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; }
@@ -216,7 +222,7 @@ textarea { resize: vertical; min-height: 120px; }
 .page .meta { margin-top: 32px; }
 
 /* footer */
-footer { border-top: 1px solid var(--line); background: var(--paper-2); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
+footer { border-top: 1px solid var(--line); background: var(--foot-bg); padding: 56px 0 40px; font-size: 14px; color: var(--ink-2); }
 .foot-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
 .foot-links { display: flex; gap: 28px; padding-top: 6px; }
 .foot-links a { transition: color var(--t-quick) var(--ease); }
